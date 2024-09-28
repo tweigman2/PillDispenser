@@ -8,11 +8,15 @@ In the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode.\
+Runs the React portion of the app in development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
+
+### `npm run electron`
+
+After running `npm start`, this command starts up the desktop GUI which then displays the React app. If any changes are made to main.js, this command will need to be rerun to show the updates.
 
 ### `npm test`
 
