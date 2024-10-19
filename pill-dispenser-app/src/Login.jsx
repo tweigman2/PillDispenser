@@ -4,16 +4,16 @@ import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import { useThemeProps } from '@mui/material';
 
-export default function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+export default function Login({onLogin, setUsername, setPassword, username, password}) {
 
+    /*
   const login = (event) => {
     if (username === "jackie" && password === "1234") {
       console.log("Logged in!");
     }
-  };
+  };*/
 
   return (
     // <div className="App">
@@ -47,7 +47,7 @@ export default function Login() {
         }}
       />
       <Stack sx={{ alignItems: "center" }}>
-        <Button sx={{ width: "200px" }} variant="contained" onClick={login}>Log In</Button>
+        <Button sx={{ width: "200px" }} variant="contained" onClick={onLogin}>Log In</Button>
       </Stack>
     </Stack>
   );
