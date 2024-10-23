@@ -6,6 +6,11 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Patients from './Patients';
 import Login from './Login';
+import VerifyDosage from './VerifyDosage';
+import ThankYou from './ThankYou';
+import ErrorDetected from './ErrorDetected';
+import ReloadPillChoice from './ReloadPillChoice';
+import ReloadPillVerification from './ReloadPillVerification';
 
 export default function App() {
   const [username, setUsername] = useState("");
@@ -41,6 +46,7 @@ let currentPage;
     break;
   }
   return (
-    <>{currentPage}</>
+    //<>{currentPage}</>
+    <ReloadPillChoice/>
   );
 }
