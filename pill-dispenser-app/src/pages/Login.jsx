@@ -1,37 +1,12 @@
-import './App.css';
 import * as React from 'react';
 import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import { useThemeProps } from '@mui/material';
 
 export default function Login({onLogin, setUsername, setPassword, username, password}) {
 
-    /*
-  const login = (event) => {
-    if (username === "jackie" && password === "1234") {
-      console.log("Logged in!");
-    }
-  };*/
-
   return (
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>src/App.js</code> and save to reload.
-    //     </p>
-    //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>
     <Stack spacing={2}>
       <h1>Authorization</h1>
       <TextField label="Username" variant="outlined" value={username}
