@@ -6,6 +6,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { Icon, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import Search from '@mui/icons-material/Search';
 import addPills from '../addPills.svg';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';

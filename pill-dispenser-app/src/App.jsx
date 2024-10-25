@@ -4,13 +4,15 @@ import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import Patients from './Patients';
-import Login from './Login';
-import VerifyDosage from './VerifyDosage';
-import ThankYou from './ThankYou';
-import ErrorDetected from './ErrorDetected';
-import ReloadPillChoice from './ReloadPillChoice';
-import ReloadPillVerification from './ReloadPillVerification';
+import Patients from './pages/Patients';
+import Login from './pages/Login';
+import VerifyDosage from './pages/VerifyDosage';
+import ThankYou from './pages/ThankYou';
+import ErrorDetected from './pages/ErrorDetected';
+import ReloadPillChoice from './pages/ReloadPillChoice';
+import ReloadPillVerification from './pages/ReloadPillVerification';
+import Prescriptions from './pages/Prescriptions';
+import Dispense from './pages/Dispense';
 
 export default function App() {
   const [username, setUsername] = useState("");
@@ -81,8 +83,7 @@ export default function App() {
       break;
   }
   return (
-    <>
-      {currentPage}
-    </>
+    <>{currentPage}</>
+    //<Prescriptions/>
   );
 }
