@@ -1,11 +1,8 @@
 import '../App.css';
 import * as React from 'react';
-import { useState } from 'react';
-import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { useThemeProps } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 export default function ReloadPillChoice({onReloadBackClick, onReloadChoiceClick}) {

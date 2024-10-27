@@ -1,5 +1,14 @@
 {
     "Tylenol": {
         "concentration": 100
+    },
+    "Allegra": {
+        "concentration": 50
+    },
+    "Sudafed": {
+        "concentration": 25
+    },
+    "Ibuprofen": {
+        "concentration": 33
     }
 }

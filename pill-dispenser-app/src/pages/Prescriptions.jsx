@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { useState } from 'react';
-import TextField from '@mui/material/TextField';
+// import { useState } from 'react';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Box, Paper, Slider, Typography } from '@mui/material';
+import { Paper, Slider, Typography } from '@mui/material';
 const patientData = require('../patientData.json');
 
 const marks = [
@@ -39,12 +38,12 @@ const marks = [
 ];
 
 function Prescription({num, prescriptionText, onPrescriptionClick}) {
-    const [backgroundColor, setBackgroundColor] = useState('white');
-    const handleClick = (event) => {
-        setBackgroundColor('blue');
-    }
+    // const [backgroundColor, setBackgroundColor] = useState('white');
+    // const handleClick = (event) => {
+    //     setBackgroundColor('blue');
+    // }
     return (
-        <Paper sx={{whiteSpace: "pre-wrap", backgroundColor: backgroundColor}} onClick={onPrescriptionClick}>
+        <Paper sx={{whiteSpace: "pre-wrap", backgroundColor: 'white'}} onClick={() => onPrescriptionClick(num - 1)}>
             <Typography borderBottom={1}>{`Prescription #${num}`}</Typography>
             <Typography>{prescriptionText}</Typography>
         </Paper>

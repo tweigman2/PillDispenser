@@ -1,28 +1,37 @@
 import '../App.css';
 import * as React from 'react';
-import { useState } from 'react';
-import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Box, Paper, Slider, Typography } from '@mui/material';
+import { Paper, Typography } from '@mui/material';
+const patientData = require('../patientData.json');
+const pillData = require('../pillData.json');
 
-export default function Dispense({onDispenseClick}) {
+export default function Dispense({onDispenseClick, patientName, patientId, prescriptionNumber, pillNumber}) {
 
-  return (
-    <Stack>
-        <h1>Dispensing</h1>
-        <Stack direction="row">
-            <img src={"tylenol-8hr.png"} width={288} height={216} />
-            <Paper onClick = {onDispenseClick}>
-                Dispensing: 2 Tylenol
-                <Paper sx={{whiteSpace: "pre-wrap"}} elevation={2}>
-                    <Typography borderBottom={1}>{"Pill Information"}</Typography>
-                    {/* In pillData.json, concentration is in mg */}
-                    <Typography>{"Concentration/Pill: 100 mg\nTotal Dosage: 500 mg"}</Typography>
+    const prescriptionData = patientData[patientId].prescriptions[prescriptionNumber];
+    const pills = Object.keys(prescriptionData);
+    const pillName = pills[pillNumber];
+    const pillAmount = prescriptionData[pillName];
+    const concentration = pillData[pillName].concentration;
+
+    return (
+        <Stack>
+            <Stack direction="row">
+                <h1>Dispensing</h1>
+                <Paper sx={{whiteSpace: "pre-wrap"}}>
+                    <Typography>{`Patient Name: ${patientName}\nPatient ID: ${patientId}`}</Typography>
                 </Paper>
-            </Paper>
+            </Stack>
+            <Stack direction="row">
+                <img src={"tylenol-8hr.png"} width={288} height={216} alt="8 hour Tylenol"/>
+                <Paper onClick = {onDispenseClick}>
+                    {`Dispensing: ${pillAmount} ${pillName}`}
+                    <Paper sx={{whiteSpace: "pre-wrap"}} elevation={2}>
+                        <Typography borderBottom={1}>{"Pill Information"}</Typography>
+                        {/* In pillData.json, concentration is in mg */}
+                        <Typography>{`Concentration/Pill: ${concentration} mg\nTotal Dosage: ${concentration * pillAmount} mg`}</Typography>
+                    </Paper>
+                </Paper>
+            </Stack>
         </Stack>
-    </Stack>
-  );
+    );
 }

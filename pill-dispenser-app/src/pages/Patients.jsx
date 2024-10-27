@@ -94,7 +94,7 @@ export default function Patients({selected, setSelected, onPatientNextClick, onL
         </div>
         <IconButton onClick={onReloadClick}>
           <Icon>
-            <img src={addPills} height={25} width={25}/>
+            <img src={addPills} height={25} width={25} alt="Reload Pills"/>
           </Icon>
         </IconButton>
         <Button variant="contained" onClick={onLogoutClick}>Logout</Button>

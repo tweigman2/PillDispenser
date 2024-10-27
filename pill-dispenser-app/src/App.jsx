@@ -1,19 +1,16 @@
 import './App.css';
 import * as React from 'react';
 import { useState } from 'react';
-import TextField from '@mui/material/TextField';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 import Patients from './pages/Patients';
 import Login from './pages/Login';
 import VerifyDosage from './pages/VerifyDosage';
 import ThankYou from './pages/ThankYou';
-import ErrorDetected from './pages/ErrorDetected';
 import ReloadPillChoice from './pages/ReloadPillChoice';
 import ReloadPillVerification from './pages/ReloadPillVerification';
 import Prescriptions from './pages/Prescriptions';
 import Dispense from './pages/Dispense';
 const loginInfo = require('./login.json');
+const patientData = require('./patientData.json');
 
 export default function App() {
   const [username, setUsername] = useState("");
@@ -22,6 +19,9 @@ export default function App() {
   // Corresponds to the 0-indexed row of what patient is selected on the Patients page
   const [patientId, setPatientId] = useState(-1);
   const [patientName, setPatientName] = useState("");
+  const [prescriptionNumber, setPrescriptionNumber] = useState(-1);
+  const [pillNumber, setPillNumber] = useState(0);
+  const [numTypePills, setNumTypePills] = useState(-1);
 
   const login = (event) => {
     if (loginInfo.hasOwnProperty(username) && loginInfo[username] === password) {
@@ -39,7 +39,9 @@ export default function App() {
     setPageNumber(2);
   }
 
-  const onPrescriptionClick = (event) => {
+  const onPrescriptionClick = (number) => {
+    setPrescriptionNumber(number);
+    setNumTypePills(Object.keys(patientData[patientId].prescriptions[number]).length);
     setPageNumber(3);
   }
   
@@ -48,7 +50,12 @@ export default function App() {
   }
 
   const onCorrectDosageClick = () => {
-    setPageNumber(5);
+    if (pillNumber === numTypePills - 1) {
+      setPageNumber(5);
+    } else {
+      setPageNumber(3);
+      setPillNumber(pillNumber + 1);
+    }
   }
 
   const onPrescriptionBackClick = () => {
@@ -79,11 +86,19 @@ export default function App() {
   let currentPage; 
 
   let verifyDosageProps ={
-    onCorrectDosageClick: onCorrectDosageClick
+    onCorrectDosageClick: onCorrectDosageClick,
+    prescriptionNumber: prescriptionNumber,
+    patientName: patientName,
+    patientId: patientId,
+    pillNumber: pillNumber
   }
 
   let dispenseProps = {
-    onDispenseClick: onDispenseClick
+    onDispenseClick: onDispenseClick,
+    prescriptionNumber: prescriptionNumber,
+    patientName: patientName,
+    patientId: patientId,
+    pillNumber: pillNumber
   }
 
   let patientProps = {

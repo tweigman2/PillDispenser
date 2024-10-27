@@ -1,10 +1,6 @@
 import '../App.css';
-import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { useThemeProps } from '@mui/material';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 
 const pageDuration = 5000; //5000 milliseconds
@@ -18,7 +14,7 @@ export default function ThankYou({afterThankYou}) {
   
     // Cleanup the timer on unmount or if page changes to avoid memory leaks
     return () => clearTimeout(timer);
-  },[]);
+  });
 
   return (
     <Stack spacing={2} alignItems="center">
