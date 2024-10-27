@@ -42,9 +42,49 @@ export default function App() {
   const onPrescriptionClick = (event) => {
     setPageNumber(3);
   }
+  
+  const onDispenseClick = () => {
+    setPageNumber(4);
+  }
+
+  const onCorrectDosageClick = () => {
+    setPageNumber(5);
+  }
+
+  const onPrescriptionBackClick = () => {
+    setPageNumber(1);
+  }
+
+  const afterThankYou = () => {
+    setPageNumber(1);
+  }
+  
+  const onReloadClick = () => {
+    setPageNumber(6);
+  }
+
+  const onReloadBackClick = () => {
+    setPageNumber(1);
+  }
+
+  const onReloadChoiceClick = () => {
+    setPageNumber(7);
+  }
+
+  const onReloadCompleteClick = () => { 
+    setPageNumber(1);
+  }
 
 
   let currentPage; 
+
+  let verifyDosageProps ={
+    onCorrectDosageClick: onCorrectDosageClick
+  }
+
+  let dispenseProps = {
+    onDispenseClick: onDispenseClick
+  }
 
   let patientProps = {
     selected: patientId,
@@ -52,13 +92,28 @@ export default function App() {
     onPatientNextClick: onPatientNextClick,
     onLogoutClick: onLogoutClick,
     setPatientName: setPatientName,
+    onReloadClick: onReloadClick
   };
 
   let prescriptionProps = {
     patientName: patientName,
     patientId: patientId,
-    onPrescriptionClick: onPrescriptionClick
+    onPrescriptionClick: onPrescriptionClick,
+    onPrescriptionBackClick: onPrescriptionBackClick
   };
+
+  let thankYouProps = {
+    afterThankYou: afterThankYou
+  }
+
+  let reloadProps = {
+    onReloadBackClick: onReloadBackClick,
+    onReloadChoiceClick: onReloadChoiceClick
+  }
+
+  let reloadActionProps = {
+    onReloadCompleteClick: onReloadCompleteClick
+  }
 
   switch (pageNumber) {
     case 0: 
@@ -77,7 +132,21 @@ export default function App() {
       currentPage = <Prescriptions {...prescriptionProps}/>;
       break;
     case 3:
-      currentPage = <Dispense />;
+      currentPage = <Dispense {...dispenseProps}/>;
+      break;
+    case 4: 
+      currentPage = <VerifyDosage {...verifyDosageProps}/>
+      break;
+    case 5:
+      currentPage = <ThankYou {...thankYouProps}/>
+      break;
+    case 6:
+      currentPage = <ReloadPillChoice {...reloadProps}/>
+      break;
+    case 7: 
+      currentPage = <ReloadPillVerification {...reloadActionProps}/>
+      break;
+    case 8:
       break;
     default: 
       break;

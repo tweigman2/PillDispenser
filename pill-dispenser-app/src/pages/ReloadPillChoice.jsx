@@ -6,20 +6,24 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useThemeProps } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-export default function ReloadPillChoice() {
+export default function ReloadPillChoice({onReloadBackClick, onReloadChoiceClick}) {
 
 
   return (
     
     <Stack spacing={2} alignItems="center">
-      <h1>Reload Pill</h1>
+      <Stack direction="row">
+        <Button variant="contained" startIcon={<ArrowBackIcon />} onClick={onReloadBackClick}>Back</Button>
+        <h1>Reload Pill</h1>
+      </Stack>
       <Typography variant="body1">
           Please select one of the pills below that you would like to restock.
       </Typography>
       <Stack direction="row" spacing={2} alignItems="center">
         <Stack alignItems="center">
-          <Typography variant="body1">
+          <Typography variant="body1" onClick={onReloadChoiceClick}>
             Module 1 - Tylenol
           </Typography>
           <img
@@ -29,17 +33,17 @@ export default function ReloadPillChoice() {
           />
         </Stack>
         <Stack alignItems="center">
-          <Typography variant="body1">
+          <Typography variant="body1" onClick={onReloadChoiceClick}>
             Module 2 - Ibuprofen
           </Typography>
-          <img
+          <img 
             src="/images/ibu.jpeg"
             alt="Ibuprofen"
             style={{width: '200px', height: 'auto'}}
           />
         </Stack>
         <Stack alignItems="center">
-          <Typography variant="body1">
+          <Typography variant="body1" onClick={onReloadChoiceClick}>
             Module 3 - Claritin
           </Typography>
           <img

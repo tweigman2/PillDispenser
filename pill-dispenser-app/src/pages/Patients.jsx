@@ -70,7 +70,7 @@ function PatientTable({selected, setSelected, setPatientName}) {
   );
 }
 
-export default function Patients({selected, setSelected, onPatientNextClick, onLogoutClick, setPatientName}) {
+export default function Patients({selected, setSelected, onPatientNextClick, onLogoutClick, setPatientName, onReloadClick}) {
   const [searchName, setSearchName] = useState("");
 
   let tableProps = {
@@ -92,7 +92,7 @@ export default function Patients({selected, setSelected, onPatientNextClick, onL
             <SearchIcon></SearchIcon>
           </IconButton>
         </div>
-        <IconButton>
+        <IconButton onClick={onReloadClick}>
           <Icon>
             <img src={addPills} height={25} width={25}/>
           </Icon>
