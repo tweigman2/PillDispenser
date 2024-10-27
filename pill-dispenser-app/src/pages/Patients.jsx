@@ -6,7 +6,6 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { Icon, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import Search from '@mui/icons-material/Search';
 import addPills from '../addPills.svg';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -15,17 +14,17 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+const patientData = require('../patientData.json');
 
 function createData(name, id) {
   return { name, id };
 }
 
-const rows = [
-  createData("Adam Adams", 1243),
-  createData("Billy Bob", 8947),
-  createData("Cassie Cassandra", 1324),
-  createData("Daniella Daniels", 3423)
-];
+const patientIDs = Object.keys(patientData);
+let rows = [];
+for (let i = 0; i < patientIDs.length; i++) {
+  rows.push(createData(patientData[patientIDs[i]].name, parseInt(patientIDs[i])));
+}
 
 function PatientTable({selected, setSelected, setPatientName}) {
   const handleClick = (event, id, name) => {

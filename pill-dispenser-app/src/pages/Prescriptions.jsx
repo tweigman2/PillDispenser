@@ -5,6 +5,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, Paper, Slider, Typography } from '@mui/material';
+const patientData = require('../patientData.json');
 
 const marks = [
     {
@@ -35,9 +36,9 @@ const marks = [
         value: 87,
         label: "9:00 PM"
     }
-]
+];
 
-function Prescription({num, onPrescriptionClick}) {
+function Prescription({num, prescriptionText, onPrescriptionClick}) {
     const [backgroundColor, setBackgroundColor] = useState('white');
     const handleClick = (event) => {
         setBackgroundColor('blue');
@@ -45,7 +46,7 @@ function Prescription({num, onPrescriptionClick}) {
     return (
         <Paper sx={{whiteSpace: "pre-wrap", backgroundColor: backgroundColor}} onClick={onPrescriptionClick}>
             <Typography borderBottom={1}>{`Prescription #${num}`}</Typography>
-            <Typography>{"2x Tylenol\n3x Claritin\n7x Ibuprofen"}</Typography>
+            <Typography>{prescriptionText}</Typography>
         </Paper>
     );
 }
@@ -63,6 +64,8 @@ export default function Prescriptions({patientName, patientId, onPrescriptionCli
         minutes = "0" + minutes;
     }
 
+    const prescriptionData = patientData[patientId].prescriptions;
+
   return (
     <Stack alignItems={"center"} spacing={3}>
         <Stack direction="row" sx={{justifyContent: "space-between", width: "100%"}}>
@@ -74,9 +77,17 @@ export default function Prescriptions({patientName, patientId, onPrescriptionCli
         </Stack>
         <Slider track={false} marks={marks} sx={{ width: "90%" }}/>
         <Stack direction="row" spacing={3}>
-            <Prescription num={1} onPrescriptionClick={onPrescriptionClick}/>
-            <Prescription num={2} onPrescriptionClick={onPrescriptionClick}/>
-            <Prescription num={3} onPrescriptionClick={onPrescriptionClick}/>
+            {prescriptionData !== undefined && prescriptionData.map((item, index) => {
+                let text = "";
+                const pillNames = Object.keys(item);
+                for (let i = 0; i < pillNames.length; i++) {
+                    text += item[pillNames[i]] + "x " + pillNames[i];
+                    if (i !== pillNames.length - 1) {
+                        text += "\n";
+                    }
+                }
+                return <Prescription key={index} num={index + 1} prescriptionText={text} onPrescriptionClick={onPrescriptionClick}/>
+            })}
         </Stack>
     </Stack>
   );

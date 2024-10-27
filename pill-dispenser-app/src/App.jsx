@@ -13,6 +13,7 @@ import ReloadPillChoice from './pages/ReloadPillChoice';
 import ReloadPillVerification from './pages/ReloadPillVerification';
 import Prescriptions from './pages/Prescriptions';
 import Dispense from './pages/Dispense';
+const loginInfo = require('./login.json');
 
 export default function App() {
   const [username, setUsername] = useState("");
@@ -23,16 +24,15 @@ export default function App() {
   const [patientName, setPatientName] = useState("");
 
   const login = (event) => {
-    if (username === "jackie" && password === "1234") {
-      console.log("Logged in!");
+    if (loginInfo.hasOwnProperty(username) && loginInfo[username] === password) {
       setPageNumber(1);
-      setUsername("");
-      setPassword("");
     }
   };
 
   const onLogoutClick = (event) => {
     setPageNumber(0);
+    setUsername("");
+    setPassword("");
   }
 
   const onPatientNextClick = (event) => {
@@ -84,6 +84,5 @@ export default function App() {
   }
   return (
     <>{currentPage}</>
-    //<Prescriptions/>
   );
 }

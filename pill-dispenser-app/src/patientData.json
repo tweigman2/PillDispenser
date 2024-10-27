@@ -1,0 +1,31 @@
+{
+    "1243": {
+        "name": "Adam Adams",
+        "prescriptions": [
+            {
+                "Tylenol": 2,
+                "Claritin": 3,
+                "Ibuprofen": 7
+            },
+            {
+                "Allegra": 6,
+                "Sudafed": 3,
+                "Ibuprofen": 2
+            },
+            {
+                "Ibuprofen": 4,
+                "Claritin": 3,
+                "Sudafed": 2
+            }
+        ]
+    },
+    "8947": {
+        "name": "Billy Bob"
+    },
+    "1324": {
+        "name": "Cassie Cassandra"
+    },
+    "3423": {
+        "name": "Daniella Daniels"
+    }
+}

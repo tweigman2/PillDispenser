@@ -17,6 +17,7 @@ export default function Dispense() {
                 Dispensing: 2 Tylenol
                 <Paper sx={{whiteSpace: "pre-wrap"}} elevation={2}>
                     <Typography borderBottom={1}>{"Pill Information"}</Typography>
+                    {/* In pillData.json, concentration is in mg */}
                     <Typography>{"Concentration/Pill: 100 mg\nTotal Dosage: 500 mg"}</Typography>
                 </Paper>
             </Paper>
