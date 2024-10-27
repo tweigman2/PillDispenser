@@ -6,7 +6,6 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import { Icon, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import Search from '@mui/icons-material/Search';
 import addPills from '../addPills.svg';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -71,7 +70,7 @@ function PatientTable({selected, setSelected, setPatientName}) {
   );
 }
 
-export default function Patients({selected, setSelected, onPatientNextClick, onLogoutClick, setPatientName}) {
+export default function Patients({selected, setSelected, onPatientNextClick, onLogoutClick, setPatientName, onReloadClick}) {
   const [searchName, setSearchName] = useState("");
 
   let tableProps = {
@@ -93,7 +92,7 @@ export default function Patients({selected, setSelected, onPatientNextClick, onL
             <SearchIcon></SearchIcon>
           </IconButton>
         </div>
-        <IconButton>
+        <IconButton onClick={onReloadClick}>
           <Icon>
             <img src={addPills} height={25} width={25}/>
           </Icon>

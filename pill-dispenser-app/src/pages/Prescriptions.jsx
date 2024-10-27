@@ -50,7 +50,7 @@ function Prescription({num, onPrescriptionClick}) {
     );
 }
 
-export default function Prescriptions({patientName, patientId, onPrescriptionClick}) {
+export default function Prescriptions({patientName, patientId, onPrescriptionClick, onPrescriptionBackClick}) {
     let currentTime = new Date();
     let hours = currentTime.getHours();
     let halfDay = "AM";
@@ -66,7 +66,7 @@ export default function Prescriptions({patientName, patientId, onPrescriptionCli
   return (
     <Stack alignItems={"center"} spacing={3}>
         <Stack direction="row" sx={{justifyContent: "space-between", width: "100%"}}>
-            <Button variant="contained" startIcon={<ArrowBackIcon />}>Back</Button>
+            <Button variant="contained" startIcon={<ArrowBackIcon />} onClick={onPrescriptionBackClick}>Back</Button>
             <Paper sx={{whiteSpace: "pre-wrap"}}>
                 <Typography>{`Patient Name: ${patientName}\nPatient ID: ${patientId}`}</Typography>
             </Paper>

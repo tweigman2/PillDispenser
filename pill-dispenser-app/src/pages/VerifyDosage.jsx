@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useThemeProps } from '@mui/material';
 
-export default function VerifyDosage({onLogin, setUsername, setPassword, username, password}) {
+export default function VerifyDosage({onCorrectDosageClick}) {
 
 
   return (
@@ -32,7 +32,7 @@ export default function VerifyDosage({onLogin, setUsername, setPassword, usernam
     </Stack>
 
       <Stack direction="row" sx={{ alignItems: "center" }}>
-        <Button sx={{ width: "200px" }} variant="contained" >Correct</Button>
+        <Button sx={{ width: "200px" }} variant="contained" onClick={onCorrectDosageClick}>Correct</Button>
         <Button sx={{ width: "200px" }} variant="contained" >Incorrect</Button>
       </Stack>
     </Stack>

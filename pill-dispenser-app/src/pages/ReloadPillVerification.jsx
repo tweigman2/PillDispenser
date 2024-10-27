@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { useThemeProps } from '@mui/material';
 
-export default function ReloadPillVerification() {
+export default function ReloadPillVerification({onReloadCompleteClick}) {
 
 
   return (
@@ -29,7 +29,7 @@ export default function ReloadPillVerification() {
       </Stack>
 
       <Stack direction="row" sx={{ alignItems: "center" }}>
-        <Button sx={{ width: "200px" }} variant="contained">Reload Complete</Button>
+        <Button sx={{ width: "200px" }} variant="contained" onClick={onReloadCompleteClick}>Reload Complete</Button>
       </Stack>
     </Stack>
   );

@@ -1,3 +1,4 @@
+import '../App.css';
 import * as React from 'react';
 import { useState } from 'react';
 import TextField from '@mui/material/TextField';
@@ -6,14 +7,14 @@ import Button from '@mui/material/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, Paper, Slider, Typography } from '@mui/material';
 
-export default function Dispense() {
+export default function Dispense({onDispenseClick}) {
 
   return (
     <Stack>
         <h1>Dispensing</h1>
         <Stack direction="row">
             <img src={"tylenol-8hr.png"} width={288} height={216} />
-            <Paper>
+            <Paper onClick = {onDispenseClick}>
                 Dispensing: 2 Tylenol
                 <Paper sx={{whiteSpace: "pre-wrap"}} elevation={2}>
                     <Typography borderBottom={1}>{"Pill Information"}</Typography>
