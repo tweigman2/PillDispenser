@@ -11,10 +11,12 @@ import Prescriptions from './pages/Prescriptions';
 import Dispense from './pages/Dispense';
 const loginInfo = require('./login.json');
 const patientData = require('./patientData.json');
+const alertDuration = 5000; // 5000 ms
 
 export default function App() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loginAlertOpen, setLoginAlertOpen] = useState(false);
   const [pageNumber, setPageNumber] = useState(0);
   // Corresponds to the 0-indexed row of what patient is selected on the Patients page
   const [patientId, setPatientId] = useState(-1);
@@ -26,6 +28,11 @@ export default function App() {
   const login = (event) => {
     if (loginInfo.hasOwnProperty(username) && loginInfo[username] === password) {
       setPageNumber(1);
+    } else if (username !== "" && password !== "" && !loginAlertOpen) {
+      setLoginAlertOpen(true);
+      setTimeout(() => {
+        setLoginAlertOpen(false);
+      }, alertDuration);
     }
   };
 
@@ -138,6 +145,7 @@ export default function App() {
         password={password}
         setUsername={setUsername}
         setPassword={setPassword}
+        alertOpen={loginAlertOpen}
       />;
       break;
     case 1: 

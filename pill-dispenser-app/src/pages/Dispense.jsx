@@ -4,6 +4,20 @@ import Stack from '@mui/material/Stack';
 import { Paper, Typography } from '@mui/material';
 const patientData = require('../patientData.json');
 const pillData = require('../pillData.json');
+// const { spawn } = require('child_process');
+
+// const exampleCode = spawn('../firmware/example');
+
+// exampleCode.stdout.on('data', (data) => {
+//     console.log(data);
+// })
+
+// window.nodeSpawn.call("../example");
+
+// const proc = await window.api.spawnCmd();
+// proc.output.on('data', (data) => {
+//     console.log(`stdout: ${data}`);
+// });
 
 export default function Dispense({onDispenseClick, patientName, patientId, prescriptionNumber, pillNumber}) {
 
@@ -12,6 +26,8 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
     const pillName = pills[pillNumber];
     const pillAmount = prescriptionData[pillName];
     const concentration = pillData[pillName].concentration;
+
+    let pillWeight = 0;
 
     return (
         <Stack>
@@ -32,6 +48,7 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
                     </Paper>
                 </Paper>
             </Stack>
+            <Paper>{`Current weight: ${pillWeight} g`}</Paper>
         </Stack>
     );
 }
