@@ -7,6 +7,7 @@ const pillData = require('../pillData.json');
 
 let output = "";
 
+window.api.sendCommand("src/firmware/scale");
 window.api.sendCommand("cat", ["/dev/ttyUSB0"]);
 window.api.onOutput((data) => {
   console.log("Output:", data);
