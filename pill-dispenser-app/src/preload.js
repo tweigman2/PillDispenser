@@ -1,15 +1,12 @@
 const { contextBridge, ipcRenderer } = require('electron');
-const { execFileSync } = require('node:child_process');
+const { execFileSync, spawn } = require('node:child_process');
 
 contextBridge.exposeInMainWorld('api', {
-    // spawnCmd: (callback) => {
-    spawnCmd() {
+    execCmd() {
         let out = execFileSync("src/firmware/example"); 
         return out.toString();
-            // ipcRenderer.send('output', stdout.toString());
-            // console.error("Stderr");
-            // console.error(stderr);
-        
-        // ipcRenderer.on('output', (_event, value) => callback(value))
-    }
+    },
+    sendCommand: (command, args) => ipcRenderer.send('spawn-command', command, args),
+    onOutput: (callback) => ipcRenderer.on('command-output', (_event, data) => callback(data)),
+    spawnCmd: spawn
 });
