@@ -24,7 +24,7 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
     const concentration = pillData[pillName].concentration;
 
     useEffect(() => {
-        window.api.sendCommand("src/firmware/i2c", [6]);
+        window.api.sendCommand("src/firmware/i2c", [pillAmount]);
     })
 
     return (
