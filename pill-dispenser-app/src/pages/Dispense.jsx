@@ -1,5 +1,6 @@
 import '../App.css';
 import * as React from 'react';
+import { useEffect } from 'react';
 import Stack from '@mui/material/Stack';
 import { Paper, Typography } from '@mui/material';
 const patientData = require('../patientData.json');
