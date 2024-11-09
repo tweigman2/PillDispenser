@@ -21,8 +21,8 @@ static const uint I2C_BAUDRATE = 100000; // 100 kHz
 // You'll need to wire pin GP4 to GP6 (SDA), and pin GP5 to GP7 (SCL).
 // static const uint I2C_SLAVE_SDA_PIN = PICO_DEFAULT_I2C_SDA_PIN; // 4
 // static const uint I2C_SLAVE_SCL_PIN = PICO_DEFAULT_I2C_SCL_PIN; // 5
-static const uint I2C_SLAVE_SDA_PIN = 0; // 4
-static const uint I2C_SLAVE_SCL_PIN = 1; // 5
+static const uint I2C_SLAVE_SDA_PIN = 0;
+static const uint I2C_SLAVE_SCL_PIN = 1;
 
 static const uint IR_SENSE_PIN = 15; // GP15
 static const uint SENSE_DELAY = 2; // ms
@@ -140,13 +140,17 @@ int main() {
 
         setup_slave();
         
-        
+        while (true) {
+            printf("%u\n", pi_instruction);
+        }
+        /*
         while(true){
             if(detect_ir()){
                 num_pills_disp++;
             }
             printf("Pills Dispensed: %u\n", num_pills_disp);
         }
+        */
         //     
         
         
