@@ -25,7 +25,15 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
 
     useEffect(() => {
         window.api.sendCommand("src/firmware/i2c", [pillAmount]);
-    })
+    });
+
+    useEffect(() => {
+        const i2cRead = setInterval(() => {
+            console.log(window.api.execCommand("src/firmware/example2"));
+        }, 500);
+
+        return () => clearInterval(i2cRead);
+    }, []);
 
     return (
         <Stack>
