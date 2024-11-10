@@ -87,6 +87,7 @@ export default function App() {
 
   const onReloadCompleteClick = () => { 
     setPageNumber(1);
+    window.api.sendCommand("src/firmware/i2c", ["w", 23, 0]);
   }
 
 

@@ -6,14 +6,16 @@ import { Paper, Typography } from '@mui/material';
 const patientData = require('../patientData.json');
 const pillData = require('../pillData.json');
 
+// const MODULE_1_ADDR = 0x17;
+
 let output = "";
 
-window.api.sendCommand("src/firmware/scale");
-window.api.sendCommand("cat", ["/dev/ttyUSB0"]);
-window.api.onOutput((data) => {
-  console.log("Output:", data);
-  output = data;
-});
+// window.api.sendCommand("src/firmware/scale");
+// window.api.sendCommand("cat", ["/dev/ttyUSB0"]);
+// window.api.onOutput((data) => {
+//   console.log("Output:", data);
+//   output = data;
+// });
 
 export default function Dispense({onDispenseClick, patientName, patientId, prescriptionNumber, pillNumber}) {
 
@@ -24,13 +26,29 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
     const concentration = pillData[pillName].concentration;
 
     useEffect(() => {
-        window.api.sendCommand("src/firmware/i2c", [pillAmount]);
+        // MSB of 1 byte is commanding the pico to be in filling state
+        // This causes the LED on the dispensing module to turn on
+        // 1 is on, 0 is off
+        window.api.sendCommand("src/firmware/i2c", ["w", 23, pillAmount]);
     });
 
     useEffect(() => {
         const i2cRead = setInterval(() => {
-            console.log(window.api.execCommand("src/firmware/example2"));
-        }, 500);
+            // try {
+            //     console.log(window.api.execCommand("src/firmware/example2", []));
+            // } catch (err) {
+
+            // }
+            // window.api.sendCommand("src/firmware/i2c", ["r"]);
+            // window.api.onOutput((data) => {
+            //     console.log("Value:", data);
+            // });
+            const dispensing_status = window.api.execCommand("src/firmware/i2c", ["r", 23]);
+            console.log(dispensing_status);
+            if (parseInt(dispensing_status) === 1) {
+                onDispenseClick();
+            }
+        }, 2000);
 
         return () => clearInterval(i2cRead);
     }, []);

@@ -1,11 +1,14 @@
 import '../App.css';
 import * as React from 'react';
+import { useEffect } from 'react';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 export default function ReloadPillVerification({onReloadCompleteClick}) {
-
+  useEffect(() => {
+    window.api.sendCommand("src/firmware/i2c", ["w", 23, 0x80]);
+  });
 
   return (
     
