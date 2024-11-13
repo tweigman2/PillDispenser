@@ -21,16 +21,16 @@
 static const uint I2C_SLAVE_ADDRESS = 0x17;
 static const uint I2C_BAUDRATE = 100000; // 100 kHz
 
-#define MOTOR_PWM_OUTPUT 0
+#define MOTOR_PWM_OUTPUT 3
 #define FLAG_VALUE 123
-#define CSA_IN 28
+#define CSA_IN 27
 #ifdef i2c_default
 // For this example, we run both the master and slave from the same board.
 // You'll need to wire pin GP4 to GP6 (SDA), and pin GP5 to GP7 (SCL).
 // static const uint I2C_SLAVE_SDA_PIN = PICO_DEFAULT_I2C_SDA_PIN; // 4
 // static const uint I2C_SLAVE_SCL_PIN = PICO_DEFAULT_I2C_SCL_PIN; // 5
-static const uint I2C_SLAVE_SDA_PIN = 21; // GP 21
-static const uint I2C_SLAVE_SCL_PIN = 20; // GP 20
+static const uint I2C_SLAVE_SDA_PIN = 0; // 4
+static const uint I2C_SLAVE_SCL_PIN = 1; // 5
 
 static const uint IR_SENSE_PIN = 15; // GP15
 static const uint SENSE_DELAY = 400; // ms 
@@ -45,12 +45,12 @@ static const uint G_LED_PIN = 10; // GP10
 static const uint numLoopNeeded = 10000; // The amount of motor spins loops before swithcing the LED
 
 static uint STATE = 0; // State 0: Idle 1: Dispensing 2: Refilling
-static uint PREVSTATE = 0;
+static uint PREVSTATE = 1000;
 
 uint8_t pi_instruction = 0x00;
-uint num_pills_td = 10;
-uint num_pills_disp = 0;
-uint8_t disp_status = 0x00;
+uint num_pills_td = 0;
+static uint num_pills_disp = 0;
+uint8_t disp_status = 0;
 uint pill_dip = 0;
 
 char instructionStr[256];
@@ -79,9 +79,10 @@ static void i2c_slave_handler(i2c_inst_t *i2c, i2c_slave_event_t event) {
     case I2C_SLAVE_RECEIVE: // master has written some data
         gpio_put(PICO_DEFAULT_LED_PIN, true);
         pi_instruction = i2c_read_byte_raw(i2c);
-        STATE = (pi_instruction&0xc0)>>6;
-        num_pills_td =pi_instruction&0x3F;
-        printf("Instruction Byte: %u\n", pi_instruction);
+        STATE = (pi_instruction&0x80)>>7;
+        num_pills_td = pi_instruction&0x7F;
+
+        if(STATE == 0) disp_status = 2;
         break;
     case I2C_SLAVE_REQUEST: // master is requesting data
         i2c_write_byte_raw(i2c, disp_status);
@@ -147,14 +148,16 @@ void detect_ir_routine(){
 
     gpio_init(R_LED_PIN);
     gpio_set_dir(R_LED_PIN, GPIO_OUT);
+
+    uint num_pills_disp_core1 = 0;
     //Start of routine
     while (true)
     {
         // printf("Howdy");
         if(detect_ir()){
-             num_pills_disp++;
+             num_pills_disp_core1++;
             //  printf("statement1 num pills according to ir: %d\n", num_pills_disp);
-             multicore_fifo_push_blocking(num_pills_disp); 
+             multicore_fifo_push_blocking(num_pills_disp_core1); 
             //  gpio_put(R_LED_PIN, 1);
             //  gpio_put(R_LED_PIN, 0);
         }
@@ -178,7 +181,7 @@ static void dispensePills(int numPills, int speedVal) {
     uint slice_num = pwm_gpio_to_slice_num(MOTOR_PWM_OUTPUT);
     // Start Spinning CW
     pwm_set_wrap(slice_num, 500);
-    pwm_set_chan_level(slice_num, PWM_CHAN_A, speedVal);
+    pwm_set_chan_level(slice_num, PWM_CHAN_B, speedVal);
     pwm_set_enabled(slice_num, true);
     
     bool CWstate = 1;
@@ -191,18 +194,20 @@ static void dispensePills(int numPills, int speedVal) {
     
     int numLoops = 0;
     
-    while (num_pills_disp != numPills){
+    while (num_pills_disp < numPills){
         // printf(pi_instruction);
-        printf("Statement2 numb pills disp in loop: %d\n", num_pills_disp);
+        printf("numb pills disp in loop: %d\n", num_pills_disp);
         //if stuck spin other direction
 
-        uint16_t raw = adc_read();
+        uint16_t raw = adc_read(); // GPIO 27
 
         int voltage_stall_sense = (int) raw;
 
+        // printf("raw: %u, int: %u\n",raw,voltage_stall_sense);
+
         if (voltage_stall_sense > 400)
         {
-            // printf("Stuck!!");
+            printf("Stuck!!\n");
             pin_one_state = !pin_one_state;
             pin_two_state = !pin_two_state;
             gpio_put(IN_1_PIN, pin_one_state);
@@ -218,8 +223,10 @@ static void dispensePills(int numPills, int speedVal) {
         
     }
 
+    printf("done!\n");
+
     // Stop Spinning
-    pwm_set_chan_level(slice_num, PWM_CHAN_A, 0);
+    pwm_set_chan_level(slice_num, PWM_CHAN_B, 0);
     gpio_put(IN_1_PIN, false);
     gpio_put(IN_2_PIN, false);
 
@@ -281,47 +288,38 @@ int main() {
     irq_set_exclusive_handler(SIO_IRQ_PROC0, core0_interrupt_handler);
     irq_set_enabled(SIO_IRQ_PROC0, true);
 
-    #if !defined(i2c_default) || !defined(PICO_DEFAULT_I2C_SDA_PIN) || !defined(PICO_DEFAULT_I2C_SCL_PIN)
-    #warning i2c / slave_mem_i2c example requires a board with I2C pins
-        puts("Default I2C pins were not defined");
-        return 0;
-    #else
-        puts("\nI2C slave example");
-
-        setup_slave();
-
-    STATE = 0x0;
+    setup_slave();
     // dispensePills(5,500);
     while (1)
     {
-        pi_instruction = 0xFF;
-        sprintf(instructionStr, "%02x" ,pi_instruction);
-
-        // printf("%u", num_pills_td);
+        printf("pi instruction: %u\n",pi_instruction);
         switch (STATE) {
-            case 0x0: // Idle
-                
-                // printf("Instruction Byte: %u\n", pi_instruction);
-                gpio_put(R_LED_PIN, 0);
-                gpio_put(G_LED_PIN, true);
-                break;
-            case 0x1: // Dispense
-                if (PREVSTATE != STATE)
-                {
-                    dispensePills(num_pills_td,500);
-                }
-                gpio_put(R_LED_PIN, 0);
-                break;
-            case 0x2: // Filling
+            case 0x1: // Refill
                 gpio_put(R_LED_PIN, true);
+                gpio_put(G_LED_PIN, false);
                 break;
+
+            case 0x0: // Dispense
+                if(num_pills_td == 0){
+                    gpio_put(R_LED_PIN, false);
+                    gpio_put(G_LED_PIN, false);
+                    disp_status = 1;
+                    break;
+                }
+                    gpio_put(R_LED_PIN, false);
+                    gpio_put(G_LED_PIN, true);
+
+                    printf("dispensing %u...\n", num_pills_td);
+                    dispensePills(num_pills_td,500);
+                    num_pills_td = 0;
+                    disp_status = 1;
+                    
+                    gpio_put(G_LED_PIN, false);
+                    
+                    break;   
             default:
                 break;
             }
-            PREVSTATE = STATE;
     }
     
-    
-        
-    #endif
 }
