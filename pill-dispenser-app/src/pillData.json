@@ -10,5 +10,8 @@
     },
     "Ibuprofen": {
         "concentration": 33
+    },
+    "Claritin": {
+        "concentration": 40
     }
 }
