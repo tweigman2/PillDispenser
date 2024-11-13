@@ -24,6 +24,7 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
     const pillName = pills[pillNumber];
     const pillAmount = prescriptionData[pillName];
     const concentration = pillData[pillName].concentration;
+    const imagePath = pillData[pillName].image;
 
     useEffect(() => {
         // MSB of 1 byte is commanding the pico to be in filling state
@@ -62,7 +63,7 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
                 </Paper>
             </Stack>
             <Stack direction="row">
-                <img src={"tylenol-8hr.png"} width={288} height={216} alt="8 hour Tylenol"/>
+                <img src={"images/" + imagePath} width={288} height={216} alt="8 hour Tylenol"/>
                 <Paper onClick = {onDispenseClick}>
                     {`Dispensing: ${pillAmount} ${pillName}`}
                     <Paper sx={{whiteSpace: "pre-wrap"}} elevation={2}>

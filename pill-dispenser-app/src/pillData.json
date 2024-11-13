@@ -1,17 +1,22 @@
 {
     "Tylenol": {
-        "concentration": 100
+        "concentration": 100,
+        "image": "tylenol_pic.jpeg"
     },
     "Allegra": {
-        "concentration": 50
+        "concentration": 50,
+        "image": "tylenol_pic.jpeg"
     },
     "Sudafed": {
-        "concentration": 25
+        "concentration": 25,
+        "image": "tylenol_pic.jpeg"
     },
     "Ibuprofen": {
-        "concentration": 33
+        "concentration": 33,
+        "image": "ibuprofen_pic.jpeg"
     },
     "Claritin": {
-        "concentration": 40
+        "concentration": 40,
+        "image": "claritin_pic.jpeg"
     }
 }

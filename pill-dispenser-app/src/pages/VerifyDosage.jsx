@@ -14,6 +14,7 @@ export default function VerifyDosage({onCorrectDosageClick, prescriptionNumber, 
   const pillName = pills[pillNumber];
   const pillAmount = prescriptionData[pillName];
   const concentration = pillData[pillName].concentration;
+  const imagePath = pillData[pillName].image;
 
   return (
     
@@ -26,7 +27,7 @@ export default function VerifyDosage({onCorrectDosageClick, prescriptionNumber, 
       </Stack>
       <Stack direction="row" spacing={2} alignItems="center">
       <img
-        src="/images/tylenol-extra-strength.jpeg"
+        src={"/images/" + imagePath}
         alt="Description"
         style={{ width: '200px', height: 'auto' }}
       />
