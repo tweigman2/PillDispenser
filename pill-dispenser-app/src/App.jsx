@@ -59,6 +59,7 @@ export default function App() {
   const onCorrectDosageClick = () => {
     if (pillNumber === numTypePills - 1) {
       setPageNumber(5);
+      setPillNumber(0);
     } else {
       setPageNumber(3);
       setPillNumber(pillNumber + 1);
