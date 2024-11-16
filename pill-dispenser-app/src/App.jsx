@@ -1,6 +1,6 @@
 import './App.css';
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Patients from './pages/Patients';
 import Login from './pages/Login';
 import VerifyDosage from './pages/VerifyDosage';
@@ -12,6 +12,8 @@ import Dispense from './pages/Dispense';
 const loginInfo = require('./login.json');
 const patientData = require('./patientData.json');
 const alertDuration = 5000; // 5000 ms
+
+let initialized = false;
 
 export default function App() {
   const [username, setUsername] = useState("");
@@ -27,16 +29,19 @@ export default function App() {
   const [scaleWeight, setScaleWeight] = useState(0);
 
   useEffect(() => {
-    window.api.sendCommand("src/firmware/scale");
-    window.api.sendCommand("cat", ["/dev/ttyUSB0"]);
-    window.api.onOutput((data) => {
-      if (data.includes("g")) {
-        data = data.replace(/\s/g, "").replace("g", "");
-        console.log("Output:", data);
-        setScaleWeight(data);
-      }
-    });
-  })
+    if (!initialized) {
+      initialized = true;
+      window.api.sendCommand("src/firmware/scale");
+      window.api.sendCommand("cat", ["/dev/ttyUSB0"]);
+      window.api.onOutput((data) => {
+        if (data.includes("g")) {
+          data = data.replace(/\s/g, "").replace("g", "");
+          console.log("Output:", data);
+          setScaleWeight(data);
+        }
+      });
+    }
+  });
 
   const login = (event) => {
     if (loginInfo.hasOwnProperty(username) && loginInfo[username] === password) {
