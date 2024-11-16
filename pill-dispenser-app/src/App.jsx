@@ -27,6 +27,7 @@ export default function App() {
   const [pillNumber, setPillNumber] = useState(0);
   const [numTypePills, setNumTypePills] = useState(-1);
   const [scaleWeight, setScaleWeight] = useState(0);
+  const [searchName, setSearchName] = useState("");
 
   useEffect(() => {
     if (!initialized) {
@@ -135,7 +136,9 @@ export default function App() {
     onPatientNextClick: onPatientNextClick,
     onLogoutClick: onLogoutClick,
     setPatientName: setPatientName,
-    onReloadClick: onReloadClick
+    onReloadClick: onReloadClick,
+    searchName: searchName,
+    setSearchName: setSearchName
   };
 
   let prescriptionProps = {

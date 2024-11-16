@@ -70,13 +70,23 @@ function PatientTable({selected, setSelected, setPatientName}) {
   );
 }
 
-export default function Patients({selected, setSelected, onPatientNextClick, onLogoutClick, setPatientName, onReloadClick}) {
-  const [searchName, setSearchName] = useState("");
+export default function Patients({selected, setSelected, onPatientNextClick, onLogoutClick, setPatientName, onReloadClick, searchName, setSearchName}) {
 
   let tableProps = {
     selected: selected,
     setSelected: setSelected,
-    setPatientName: setPatientName
+    setPatientName: setPatientName,
+  };
+
+  const filter = (event) => {
+    let text = event.target.value;
+    setSearchName(text);
+    rows = [];
+    for (let i = 0; i < patientIDs.length; i++) {
+      if (patientData[patientIDs[i]].name.toLowerCase().includes(text.toLowerCase()) || patientIDs[i].toLowerCase().includes(text.toLowerCase())) {
+        rows.push(createData(patientData[patientIDs[i]].name, parseInt(patientIDs[i])));
+      }
+    }
   };
   
   return (
@@ -84,13 +94,11 @@ export default function Patients({selected, setSelected, onPatientNextClick, onL
       <Stack direction="row" sx={{justifyContent: "space-between"}}>
         <div>
           <TextField label="Patient Search Bar" variant="outlined" value={searchName}
-            onChange={(event) => {
-              setSearchName(event.target.value);
-            }}
+            onChange={filter}
           />
-          <IconButton>
+          {/* <IconButton onClick={filter}>
             <SearchIcon></SearchIcon>
-          </IconButton>
+          </IconButton> */}
         </div>
         <IconButton onClick={onReloadClick}>
           <Icon>

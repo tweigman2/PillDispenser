@@ -5,12 +5,6 @@ import Button from '@mui/material/Button';
 import { Alert } from '@mui/material';
 
 export default function Login({onLogin, setUsername, setPassword, username, password, alertOpen}) {
-  const onPrint = () => {
-    window.api.sendCommand("src/firmware/example.exe");
-    window.api.onOutput((data) => {
-      console.log("Output:", data);
-    });
-  };
 
   return (
     <Stack spacing={2}>
@@ -27,7 +21,6 @@ export default function Login({onLogin, setUsername, setPassword, username, pass
           setPassword(event.target.value);
         }}
       />
-      <Button variant="contained" onClick={onPrint}>Print</Button>
       <Stack sx={{ alignItems: "center" }}>
         <Button sx={{ width: "200px" }} variant="contained" onClick={onLogin}>Log In</Button>
       </Stack>
