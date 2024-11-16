@@ -10,12 +10,12 @@ const pillData = require('../pillData.json');
 
 let output = "";
 
-// window.api.sendCommand("src/firmware/scale");
-// window.api.sendCommand("cat", ["/dev/ttyUSB0"]);
-// window.api.onOutput((data) => {
-//   console.log("Output:", data);
-//   output = data;
-// });
+window.api.sendCommand("src/firmware/scale");
+window.api.sendCommand("cat", ["/dev/ttyUSB0"]);
+window.api.onOutput((data) => {
+  console.log("Output:", data);
+  output = data;
+});
 
 export default function Dispense({onDispenseClick, patientName, patientId, prescriptionNumber, pillNumber}) {
 
@@ -25,6 +25,10 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
     const pillAmount = prescriptionData[pillName];
     const concentration = pillData[pillName].concentration;
     const imagePath = pillData[pillName].image;
+    const pillWeight = pillData[pillName].weight;
+    const tolerance = pillData[pillName].tolerance;
+    const lowerBound = pillWeight * (1 - tolerance / 100);
+    const upperBound = pillWeight * (1 + tolerance / 100);
 
     useEffect(() => {
         // MSB of 1 byte is commanding the pico to be in filling state
@@ -47,7 +51,11 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
             const dispensing_status = window.api.execCommand("src/firmware/i2c", ["r", 23]);
             console.log(dispensing_status);
             if (parseInt(dispensing_status) === 1) {
-                onDispenseClick();
+                if (output >= lowerBound * pillAmount && output <= upperBound * pillAmount) {
+                    onDispenseClick();
+                } else {
+                    console.error("Pill weight is outside of the expected range! Double check that there are the right number of pills!");
+                }
             }
         }, 2000);
 
@@ -68,7 +76,7 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
                     {`Dispensing: ${pillAmount} ${pillName}`}
                     <Paper sx={{whiteSpace: "pre-wrap"}} elevation={2}>
                         <Typography borderBottom={1}>{"Pill Information"}</Typography>
-                        {/* In pillData.json, concentration is in mg */}
+                        {/* In pillData.json, concentration is in mg, weight is in g, tolerance is in percent */}
                         <Typography>{`Concentration/Pill: ${concentration} mg\nTotal Dosage: ${concentration * pillAmount} mg`}</Typography>
                     </Paper>
                 </Paper>

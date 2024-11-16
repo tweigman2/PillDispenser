@@ -3,6 +3,9 @@
         "name": "Adam Adams",
         "prescriptions": [
             {
+                "Caffeine": 4
+            },
+            {
                 "Tylenol": 2,
                 "Claritin": 3,
                 "Ibuprofen": 7

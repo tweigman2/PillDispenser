@@ -18,5 +18,11 @@
     "Claritin": {
         "concentration": 40,
         "image": "claritin_pic.jpeg"
+    },
+    "Caffeine": {
+        "concentration": 200,
+        "image": "caffeine_pic.webp",
+        "weight": 0.53,
+        "tolerance": 5
     }
 }
