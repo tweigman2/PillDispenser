@@ -12,7 +12,7 @@ const createWindow = () => {
             nodeIntegration: true
         }
     });
-    
+    win.maximize();
     win.loadURL("http://localhost:3000");
     win.webContents.openDevTools();
 }

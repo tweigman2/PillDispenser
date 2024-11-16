@@ -13,8 +13,11 @@ let output = "";
 window.api.sendCommand("src/firmware/scale");
 window.api.sendCommand("cat", ["/dev/ttyUSB0"]);
 window.api.onOutput((data) => {
-  console.log("Output:", data);
-  output = data;
+  if (data.includes("g")) {
+    data = data.replace(/\s/g, "");
+    console.log("Output:", data);
+    output = data;
+  }
 });
 
 export default function Dispense({onDispenseClick, patientName, patientId, prescriptionNumber, pillNumber}) {
@@ -30,37 +33,37 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
     const lowerBound = pillWeight * (1 - tolerance / 100);
     const upperBound = pillWeight * (1 + tolerance / 100);
 
-    useEffect(() => {
-        // MSB of 1 byte is commanding the pico to be in filling state
-        // This causes the LED on the dispensing module to turn on
-        // 1 is on, 0 is off
-        window.api.sendCommand("src/firmware/i2c", ["w", 23, pillAmount]);
-    });
+    // useEffect(() => {
+    //     // MSB of 1 byte is commanding the pico to be in filling state
+    //     // This causes the LED on the dispensing module to turn on
+    //     // 1 is on, 0 is off
+    //     window.api.sendCommand("src/firmware/i2c", ["w", 23, pillAmount]);
+    // });
 
-    useEffect(() => {
-        const i2cRead = setInterval(() => {
-            // try {
-            //     console.log(window.api.execCommand("src/firmware/example2", []));
-            // } catch (err) {
+    // useEffect(() => {
+    //     const i2cRead = setInterval(() => {
+    //         // try {
+    //         //     console.log(window.api.execCommand("src/firmware/example2", []));
+    //         // } catch (err) {
 
-            // }
-            // window.api.sendCommand("src/firmware/i2c", ["r"]);
-            // window.api.onOutput((data) => {
-            //     console.log("Value:", data);
-            // });
-            const dispensing_status = window.api.execCommand("src/firmware/i2c", ["r", 23]);
-            console.log(dispensing_status);
-            if (parseInt(dispensing_status) === 1) {
-                if (output >= lowerBound * pillAmount && output <= upperBound * pillAmount) {
-                    onDispenseClick();
-                } else {
-                    console.error("Pill weight is outside of the expected range! Double check that there are the right number of pills!");
-                }
-            }
-        }, 2000);
+    //         // }
+    //         // window.api.sendCommand("src/firmware/i2c", ["r"]);
+    //         // window.api.onOutput((data) => {
+    //         //     console.log("Value:", data);
+    //         // });
+    //         const dispensing_status = window.api.execCommand("src/firmware/i2c", ["r", 0x17]);
+    //         console.log(dispensing_status);
+    //         if (parseInt(dispensing_status) === 1) {
+    //             if (output >= lowerBound * pillAmount && output <= upperBound * pillAmount) {
+    //                 onDispenseClick();
+    //             } else {
+    //                 console.error("Pill weight is outside of the expected range! Double check that there are the right number of pills!");
+    //             }
+    //         }
+    //     }, 2000);
 
-        return () => clearInterval(i2cRead);
-    }, []);
+    //     return () => clearInterval(i2cRead);
+    // }, []);
 
     return (
         <Stack>
