@@ -6,21 +6,9 @@ import { Paper, Typography } from '@mui/material';
 const patientData = require('../patientData.json');
 const pillData = require('../pillData.json');
 
-// const MODULE_1_ADDR = 0x17;
+const MODULE_1_ADDR = 0x17; // If this doesn't work, replace with 23
 
-let output = "";
-
-window.api.sendCommand("src/firmware/scale");
-window.api.sendCommand("cat", ["/dev/ttyUSB0"]);
-window.api.onOutput((data) => {
-  if (data.includes("g")) {
-    data = data.replace(/\s/g, "");
-    console.log("Output:", data);
-    output = data;
-  }
-});
-
-export default function Dispense({onDispenseClick, patientName, patientId, prescriptionNumber, pillNumber}) {
+export default function Dispense({onDispenseClick, patientName, patientId, prescriptionNumber, pillNumber, scaleWeight}) {
 
     const prescriptionData = patientData[patientId].prescriptions[prescriptionNumber];
     const pills = Object.keys(prescriptionData);
@@ -37,7 +25,7 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
     //     // MSB of 1 byte is commanding the pico to be in filling state
     //     // This causes the LED on the dispensing module to turn on
     //     // 1 is on, 0 is off
-    //     window.api.sendCommand("src/firmware/i2c", ["w", 23, pillAmount]);
+    //     window.api.sendCommand("src/firmware/i2c", ["w", MODULE_1_ADDR, pillAmount]);
     // });
 
     // useEffect(() => {
@@ -51,7 +39,7 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
     //         // window.api.onOutput((data) => {
     //         //     console.log("Value:", data);
     //         // });
-    //         const dispensing_status = window.api.execCommand("src/firmware/i2c", ["r", 0x17]);
+    //         const dispensing_status = window.api.execCommand("src/firmware/i2c", ["r", MODULE_1_ADDR]);
     //         console.log(dispensing_status);
     //         if (parseInt(dispensing_status) === 1) {
     //             if (output >= lowerBound * pillAmount && output <= upperBound * pillAmount) {
@@ -84,7 +72,7 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
                     </Paper>
                 </Paper>
             </Stack>
-            <Paper>{`Current weight: ${output} g`}</Paper>
+            <Paper>{`Current weight: ${scaleWeight} g`}</Paper>
         </Stack>
     );
 }

@@ -24,6 +24,19 @@ export default function App() {
   const [prescriptionNumber, setPrescriptionNumber] = useState(-1);
   const [pillNumber, setPillNumber] = useState(0);
   const [numTypePills, setNumTypePills] = useState(-1);
+  const [scaleWeight, setScaleWeight] = useState(0);
+
+  useEffect(() => {
+    window.api.sendCommand("src/firmware/scale");
+    window.api.sendCommand("cat", ["/dev/ttyUSB0"]);
+    window.api.onOutput((data) => {
+      if (data.includes("g")) {
+        data = data.replace(/\s/g, "").replace("g", "");
+        console.log("Output:", data);
+        setScaleWeight(data);
+      }
+    });
+  })
 
   const login = (event) => {
     if (loginInfo.hasOwnProperty(username) && loginInfo[username] === password) {
@@ -107,7 +120,8 @@ export default function App() {
     prescriptionNumber: prescriptionNumber,
     patientName: patientName,
     patientId: patientId,
-    pillNumber: pillNumber
+    pillNumber: pillNumber,
+    scaleWeight: scaleWeight
   }
 
   let patientProps = {
