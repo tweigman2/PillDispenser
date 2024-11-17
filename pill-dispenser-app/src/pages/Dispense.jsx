@@ -1,6 +1,6 @@
 import '../App.css';
 import * as React from 'react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Stack from '@mui/material/Stack';
 import { Paper, Typography } from '@mui/material';
 const patientData = require('../patientData.json');
@@ -20,6 +20,38 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
     const tolerance = pillData[pillName].tolerance;
     const lowerBound = pillWeight * (1 - tolerance / 100);
     const upperBound = pillWeight * (1 + tolerance / 100);
+
+    const [hours, setHours] = useState(0);
+    const [minutes, setMinutes] = useState(0);
+    const [halfDay, setHalfDay] = useState("AM");
+
+    const updateClock = () => {
+        let currentTime = new Date();
+        let newHours = currentTime.getHours();
+        let newHalfDay = "AM";
+        if (newHours > 12) {
+            newHours -= 12;
+            newHalfDay = "PM";
+        } else if (newHours === 12) {
+            newHalfDay = "PM";
+        } else if (newHours === 0) {
+            newHours += 12;
+        }
+        let newMinutes = currentTime.getMinutes();
+        if (newMinutes < 10) {
+            newMinutes = "0" + newMinutes;
+        }
+        setHours(newHours);
+        setMinutes(newMinutes);
+        setHalfDay(newHalfDay);
+    }
+
+    useEffect(() => {
+        updateClock();
+        const updateClockInterval = setInterval(updateClock, 1000);
+
+        return () => clearInterval(updateClockInterval);
+    });
 
     useEffect(() => {
         // MSB of 1 byte is commanding the pico to be in filling state
@@ -55,24 +87,25 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
 
     return (
         <Stack>
-            <Stack direction="row">
-                <h1>Dispensing</h1>
+            <Stack direction="row" justifyContent={"space-between"} pb={3}>
+                <Typography variant="h4">Dispensing</Typography>
                 <Paper sx={{whiteSpace: "pre-wrap"}}>
                     <Typography>{`Patient Name: ${patientName}\nPatient ID: ${patientId}`}</Typography>
                 </Paper>
+                <Paper>{`${hours}:${minutes} ${halfDay}`}</Paper>
             </Stack>
-            <Stack direction="row">
-                <img src={"images/" + imagePath} width={288} height={216} alt="8 hour Tylenol"/>
-                <Paper onClick = {onDispenseClick}>
-                    {`Dispensing: ${pillAmount} ${pillName}`}
-                    <Paper sx={{whiteSpace: "pre-wrap"}} elevation={2}>
-                        <Typography borderBottom={1}>{"Pill Information"}</Typography>
+            <Stack direction="row" justifyContent={"space-evenly"}>
+                <img src={"images/" + imagePath} width={288} height={216} alt="Pill being dispensed"/>
+                <Paper onClick={onDispenseClick} sx={{whiteSpace: "pre-wrap"}}>
+                    <Typography>{`Dispensing: ${pillAmount} ${pillName}\n\n`}</Typography>
+                    {/* <Paper sx={{whiteSpace: "pre-wrap"}} elevation={2}> */}
+                    <Typography borderBottom={1}>{"Pill Information"}</Typography>
                         {/* In pillData.json, concentration is in mg, weight is in g, tolerance is in percent */}
-                        <Typography>{`Concentration/Pill: ${concentration} mg\nTotal Dosage: ${concentration * pillAmount} mg`}</Typography>
-                    </Paper>
+                    <Typography>{`\tConcentration/Pill: ${concentration} mg\n\tTotal Dosage: ${concentration * pillAmount} mg`}</Typography>
+                    {/* </Paper> */}
+                    <Typography>{`\nCurrent weight: ${scaleWeight} g`}</Typography>
                 </Paper>
             </Stack>
-            <Paper>{`Current weight: ${scaleWeight} g`}</Paper>
         </Stack>
     );
 }

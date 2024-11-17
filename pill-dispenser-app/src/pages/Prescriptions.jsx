@@ -1,5 +1,4 @@
-import * as React from 'react';
-// import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -51,17 +50,37 @@ function Prescription({num, prescriptionText, onPrescriptionClick}) {
 }
 
 export default function Prescriptions({patientName, patientId, onPrescriptionClick, onPrescriptionBackClick}) {
-    let currentTime = new Date();
-    let hours = currentTime.getHours();
-    let halfDay = "AM";
-    if (hours > 12) {
-        hours -= 12;
-        halfDay = "PM";
+    const [hours, setHours] = useState(0);
+    const [minutes, setMinutes] = useState(0);
+    const [halfDay, setHalfDay] = useState("AM");
+
+    const updateClock = () => {
+        let currentTime = new Date();
+        let newHours = currentTime.getHours();
+        let newHalfDay = "AM";
+        if (newHours > 12) {
+            newHours -= 12;
+            newHalfDay = "PM";
+        } else if (newHours === 12) {
+            newHalfDay = "PM";
+        } else if (newHours === 0) {
+            newHours += 12;
+        }
+        let newMinutes = currentTime.getMinutes();
+        if (newMinutes < 10) {
+            newMinutes = "0" + newMinutes;
+        }
+        setHours(newHours);
+        setMinutes(newMinutes);
+        setHalfDay(newHalfDay);
     }
-    let minutes = currentTime.getMinutes();
-    if (minutes < 10) {
-        minutes = "0" + minutes;
-    }
+
+    useEffect(() => {
+        updateClock();
+        const updateClockInterval = setInterval(updateClock, 1000);
+
+        return () => clearInterval(updateClockInterval);
+    });
 
     const prescriptionData = patientData[patientId].prescriptions;
 
