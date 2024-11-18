@@ -93,7 +93,7 @@ export default function Prescriptions({patientName, patientId, onPrescriptionCli
             </Paper>
             <Paper>{`${hours}:${minutes} ${halfDay}`}</Paper>
         </Stack>
-        <Slider track={false} marks={marks} sx={{ width: "90%" }}/>
+        {/* <Slider track={false} marks={marks} sx={{ width: "90%" }}/> */}
         <Stack direction="row" spacing={3}>
             {prescriptionData !== undefined && prescriptionData.map((item, index) => {
                 let text = "";

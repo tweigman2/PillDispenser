@@ -87,16 +87,16 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
 
     return (
         <Stack>
-            <Stack direction="row" justifyContent={"space-between"} pb={3}>
+            <Stack direction="row" justifyContent="space-between" pb={3}>
                 <Typography variant="h4">Dispensing</Typography>
                 <Paper sx={{whiteSpace: "pre-wrap"}}>
                     <Typography>{`Patient Name: ${patientName}\nPatient ID: ${patientId}`}</Typography>
                 </Paper>
                 <Paper>{`${hours}:${minutes} ${halfDay}`}</Paper>
             </Stack>
-            <Stack direction="row" justifyContent={"space-evenly"}>
+            <Stack direction="row" justifyContent="center" spacing={10}>
                 <img src={"images/" + imagePath} width={288} height={216} alt="Pill being dispensed"/>
-                <Paper onClick={onDispenseClick} sx={{whiteSpace: "pre-wrap"}}>
+                <Paper onClick={onDispenseClick} sx={{whiteSpace: "pre-wrap", p: "5px"}}>
                     <Typography>{`Dispensing: ${pillAmount} ${pillName}\n\n`}</Typography>
                     {/* <Paper sx={{whiteSpace: "pre-wrap"}} elevation={2}> */}
                     <Typography borderBottom={1}>{"Pill Information"}</Typography>

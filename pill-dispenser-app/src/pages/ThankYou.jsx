@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material';
 import '../App.css';
 import Stack from '@mui/material/Stack';
 import React, { useEffect } from 'react';
@@ -17,13 +18,13 @@ export default function ThankYou({afterThankYou}) {
   });
 
   return (
-    <Stack spacing={2} alignItems="center">
-    <img
-        src="/images/logo2.png"
-        alt="Description"
-        style={{ width: '200px', height: 'auto' }}
-    />
-    <h1>Thank You!</h1>
+    <Stack spacing={2} alignItems="center" justifyContent="center" height="90vh">
+      <img
+          src="/images/logo2.png"
+          alt="Description"
+          style={{ width: '200px', height: 'auto' }}
+      />
+      <Typography variant="h4">Thank You!</Typography>
     </Stack>
   );
 }

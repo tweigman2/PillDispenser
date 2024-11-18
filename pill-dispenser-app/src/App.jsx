@@ -79,6 +79,7 @@ export default function App() {
     if (pillNumber === numTypePills - 1) {
       setPageNumber(5);
       setPillNumber(0);
+      setPatientId(-1);
     } else {
       setPageNumber(3);
       setPillNumber(pillNumber + 1);
