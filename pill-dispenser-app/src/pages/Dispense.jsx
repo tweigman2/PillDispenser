@@ -79,7 +79,7 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
             console.log(lowerBound * pillAmount);
             console.log(upperBound * pillAmount);
             if (parseInt(dispensing_status) === 1) {
-                if (scaleWeight >= (lowerBound * pillAmount) && scaleWeight <= (upperBound * pillAmount)) {
+                if (parseFloat(scaleWeight) >= (lowerBound * pillAmount) && parseFloat(scaleWeight) <= (upperBound * pillAmount)) {
                     onDispenseClick();
                 } else {
                     console.error("Pill weight is outside of the expected range! Double check that there are the right number of pills!");
