@@ -43,7 +43,7 @@ function PatientTable({selected, setSelected, setPatientName}) {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Patient Names:</TableCell>
+              <TableCell sx={{width: "60%"}}>Patient Names:</TableCell>
               <TableCell>Patient ID:</TableCell>
             </TableRow>
           </TableHead>
@@ -73,9 +73,9 @@ function PatientTable({selected, setSelected, setPatientName}) {
 export default function Patients({selected, setSelected, onPatientNextClick, onLogoutClick, setPatientName, onReloadClick, searchName, setSearchName}) {
 
   let tableProps = {
-    selected: selected,
-    setSelected: setSelected,
-    setPatientName: setPatientName,
+    selected,
+    setSelected,
+    setPatientName,
   };
 
   const filter = (event) => {
@@ -96,9 +96,6 @@ export default function Patients({selected, setSelected, onPatientNextClick, onL
           <TextField label="Patient Search Bar" variant="outlined" value={searchName}
             onChange={filter}
           />
-          {/* <IconButton onClick={filter}>
-            <SearchIcon></SearchIcon>
-          </IconButton> */}
         </div>
         <IconButton onClick={onReloadClick}>
           <Icon>

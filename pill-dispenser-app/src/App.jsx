@@ -29,6 +29,8 @@ export default function App() {
   const [scaleWeight, setScaleWeight] = useState(0);
   const [searchName, setSearchName] = useState("");
   const [startDispensing, setStartDispensing] = useState(false);
+  const [pillsInModules, setPillsInModules] = useState([]);
+  const [moduleBeingReloaded, setModuleBeingReloaded] = useState(-1);
 
   useEffect(() => {
     if (!initialized) {
@@ -104,8 +106,9 @@ export default function App() {
     setPageNumber(1);
   }
 
-  const onReloadChoiceClick = () => {
+  const onReloadChoiceClick = (moduleNumber) => {
     setPageNumber(7);
+    setModuleBeingReloaded(moduleNumber);
   }
 
   const onReloadCompleteClick = () => { 
@@ -117,11 +120,11 @@ export default function App() {
   let currentPage; 
 
   let verifyDosageProps ={
-    onCorrectDosageClick: onCorrectDosageClick,
-    prescriptionNumber: prescriptionNumber,
-    patientName: patientName,
-    patientId: patientId,
-    pillNumber: pillNumber
+    onCorrectDosageClick,
+    prescriptionNumber,
+    patientName,
+    patientId,
+    pillNumber
   }
 
   let dispenseProps = {
@@ -138,32 +141,35 @@ export default function App() {
   let patientProps = {
     selected: patientId,
     setSelected: setPatientId,
-    onPatientNextClick: onPatientNextClick,
-    onLogoutClick: onLogoutClick,
-    setPatientName: setPatientName,
-    onReloadClick: onReloadClick,
-    searchName: searchName,
-    setSearchName: setSearchName
+    onPatientNextClick,
+    onLogoutClick,
+    setPatientName,
+    onReloadClick,
+    searchName,
+    setSearchName
   };
 
   let prescriptionProps = {
-    patientName: patientName,
-    patientId: patientId,
-    onPrescriptionClick: onPrescriptionClick,
-    onPrescriptionBackClick: onPrescriptionBackClick
+    patientName,
+    patientId,
+    onPrescriptionClick,
+    onPrescriptionBackClick
   };
 
   let thankYouProps = {
-    afterThankYou: afterThankYou
+    afterThankYou
   }
 
   let reloadProps = {
-    onReloadBackClick: onReloadBackClick,
-    onReloadChoiceClick: onReloadChoiceClick
+    onReloadBackClick,
+    onReloadChoiceClick,
+    pillsInModules,
+    setPillsInModules
   }
 
   let reloadActionProps = {
-    onReloadCompleteClick: onReloadCompleteClick
+    onReloadCompleteClick,
+    moduleBeingReloaded
   }
 
   switch (pageNumber) {
