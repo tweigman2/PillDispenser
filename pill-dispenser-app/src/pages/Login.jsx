@@ -11,13 +11,11 @@ export default function Login({onLogin, setUsername, setPassword, username, pass
       <Typography variant="h4">Authorization</Typography>
       <TextField label="Username" variant="outlined" value={username}
         onChange={(event) => {
-          console.log(username);
           setUsername(event.target.value);
         }}
       />
       <TextField label="Password" variant="outlined" value={password} type="password"
         onChange={(event) => {
-          console.log(password);
           setPassword(event.target.value);
         }}
       />

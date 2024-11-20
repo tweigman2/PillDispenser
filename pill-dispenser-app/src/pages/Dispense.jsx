@@ -8,6 +8,8 @@ const pillData = require('../pillData.json');
 
 const MODULE_1_ADDR = 0x17; // If this doesn't work, replace with 23
 
+let startDispenseSent = false;
+
 export default function Dispense({onDispenseClick, patientName, patientId, prescriptionNumber, pillNumber, scaleWeight}) {
 
     const prescriptionData = patientData[patientId].prescriptions[prescriptionNumber];
@@ -54,10 +56,13 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
     });
 
     useEffect(() => {
-        // MSB of 1 byte is commanding the pico to be in filling state
-        // This causes the LED on the dispensing module to turn on
-        // 1 is on, 0 is off
-        window.api.sendCommand("src/firmware/i2c", ["w", MODULE_1_ADDR, pillAmount]);
+        if (!startDispenseSent) {
+            startDispenseSent = true;
+            // MSB of 1 byte is commanding the pico to be in filling state
+            // This causes the LED on the dispensing module to turn on
+            // 1 is on, 0 is off
+            window.api.sendCommand("src/firmware/i2c", ["w", MODULE_1_ADDR, pillAmount]);
+        }
     });
 
     useEffect(() => {
