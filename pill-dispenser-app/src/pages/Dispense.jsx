@@ -76,8 +76,10 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
             // });
             const dispensing_status = window.api.execCommand("src/firmware/i2c", ["r", MODULE_1_ADDR]);
             console.log(dispensing_status);
+            console.log(lowerBound * pillAmount);
+            console.log(upperBound * pillAmount);
             if (parseInt(dispensing_status) === 1) {
-                if (scaleWeight >= lowerBound * pillAmount && scaleWeight <= upperBound * pillAmount) {
+                if (scaleWeight >= (lowerBound * pillAmount) && scaleWeight <= (upperBound * pillAmount)) {
                     onDispenseClick();
                 } else {
                     console.error("Pill weight is outside of the expected range! Double check that there are the right number of pills!");
