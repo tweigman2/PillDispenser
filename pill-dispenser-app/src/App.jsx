@@ -28,6 +28,7 @@ export default function App() {
   const [numTypePills, setNumTypePills] = useState(-1);
   const [scaleWeight, setScaleWeight] = useState(0);
   const [searchName, setSearchName] = useState("");
+  const [startDispensing, setStartDispensing] = useState(false);
 
   useEffect(() => {
     if (!initialized) {
@@ -73,6 +74,7 @@ export default function App() {
   
   const onDispenseClick = () => {
     setPageNumber(4);
+    setStartDispensing(false);
   }
 
   const onCorrectDosageClick = () => {
@@ -123,12 +125,14 @@ export default function App() {
   }
 
   let dispenseProps = {
-    onDispenseClick: onDispenseClick,
-    prescriptionNumber: prescriptionNumber,
-    patientName: patientName,
-    patientId: patientId,
-    pillNumber: pillNumber,
-    scaleWeight: scaleWeight
+    onDispenseClick,
+    prescriptionNumber,
+    patientName,
+    patientId,
+    pillNumber,
+    scaleWeight,
+    startDispensing,
+    setStartDispensing
   }
 
   let patientProps = {
