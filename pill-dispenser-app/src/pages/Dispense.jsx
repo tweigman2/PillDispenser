@@ -1,6 +1,6 @@
 import '../App.css';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Stack from '@mui/material/Stack';
 import { Paper, Typography } from '@mui/material';
 const patientData = require('../patientData.json');
@@ -24,6 +24,8 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
     const [hours, setHours] = useState(0);
     const [minutes, setMinutes] = useState(0);
     const [halfDay, setHalfDay] = useState("AM");
+    const scaleWeightRef = useRef();
+    scaleWeightRef.current = scaleWeight;
 
     const updateClock = () => {
         let currentTime = new Date();
@@ -76,10 +78,11 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
             // });
             const dispensing_status = window.api.execCommand("src/firmware/i2c", ["r", MODULE_1_ADDR]);
             console.log(dispensing_status);
+            console.log(parseFloat(scaleWeight));
             console.log(lowerBound * pillAmount);
             console.log(upperBound * pillAmount);
             if (parseInt(dispensing_status) === 1) {
-                if (parseFloat(scaleWeight) >= (lowerBound * pillAmount) && parseFloat(scaleWeight) <= (upperBound * pillAmount)) {
+                if (parseFloat(scaleWeightRef.current) >= (lowerBound * pillAmount) && parseFloat(scaleWeightRef.current) <= (upperBound * pillAmount)) {
                     onDispenseClick();
                 } else {
                     console.error("Pill weight is outside of the expected range! Double check that there are the right number of pills!");
