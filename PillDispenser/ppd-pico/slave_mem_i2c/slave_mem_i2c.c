@@ -29,8 +29,8 @@ static const uint I2C_BAUDRATE = 100000; // 100 kHz
 // You'll need to wire pin GP4 to GP6 (SDA), and pin GP5 to GP7 (SCL).
 // static const uint I2C_SLAVE_SDA_PIN = PICO_DEFAULT_I2C_SDA_PIN; // 4
 // static const uint I2C_SLAVE_SCL_PIN = PICO_DEFAULT_I2C_SCL_PIN; // 5
-static const uint I2C_SLAVE_SDA_PIN = 0; // 4
-static const uint I2C_SLAVE_SCL_PIN = 1; // 5
+static const uint I2C_SLAVE_SDA_PIN = 2; // 4
+static const uint I2C_SLAVE_SCL_PIN = 3; // 5
 
 static const uint IR_SENSE_PIN = 15; // GP15
 static const uint SENSE_DELAY = 400; // ms 
@@ -204,14 +204,14 @@ static void dispensePills(int numPills, int speedVal) {
     
     while (num_pills_disp < numPills){
         // printf(pi_instruction);
-        // printf("numb pills disp in loop: %d\n", num_pills_disp);
+        printf("numb pills disp in loop: %d\n", num_pills_disp);
         //if stuck spin other direction
 
-        uint16_t raw = adc_read(); // GPIO 27
+        uint16_t raw = adc_read(); // GPIO 26
 
         int voltage_stall_sense = (int) raw;
 
-        printf("raw: %u, int: %u\n, state1: %u, state2: %u",raw,voltage_stall_sense,pin_one_state,pin_two_state);
+        // printf("raw: %u, int: %u\n, state1: %u, state2: %u",raw,voltage_stall_sense,pin_one_state,pin_two_state);
 
         if (voltage_stall_sense > 3000)
         {
@@ -269,9 +269,9 @@ static void setup_slave() {
     gpio_set_function(I2C_SLAVE_SCL_PIN, GPIO_FUNC_I2C);
     gpio_pull_up(I2C_SLAVE_SCL_PIN);
 
-    i2c_init(i2c0, I2C_BAUDRATE);
+    i2c_init(i2c1, I2C_BAUDRATE);
     // configure I2C0 for slave mode
-    i2c_slave_init(i2c0, I2C_SLAVE_ADDRESS, &i2c_slave_handler);
+    i2c_slave_init(i2c1, I2C_SLAVE_ADDRESS, &i2c_slave_handler);
 }
 
 #endif
@@ -308,37 +308,38 @@ int main() {
     irq_set_enabled(SIO_IRQ_PROC0, true);
 
     setup_slave();
-    dispensePills(5,500);
-    // while (1)
-    // {
-    //     printf("pi instruction: %u\n",pi_instruction);
-    //     switch (STATE) {
-    //         case 0x1: // Refill
-    //             gpio_put(R_LED_PIN, true);
-    //             gpio_put(G_LED_PIN, false);
-    //             break;
+    // dispensePills(5,500);
+    while (1)
+    {
+        printf("pi instruction: %u\n",pi_instruction);
+        printf("disp status: %u\n",disp_status);
+        switch (STATE) {
+            case 0x1: // Refill
+                gpio_put(R_LED_PIN, true);
+                gpio_put(G_LED_PIN, false);
+                break;
 
-    //         case 0x0: // Dispense
-    //             if(num_pills_td == 0){
-    //                 gpio_put(R_LED_PIN, false);
-    //                 gpio_put(G_LED_PIN, false);
-    //                 disp_status = 1;
-    //                 break;
-    //             }
-    //                 gpio_put(R_LED_PIN, false);
-    //                 gpio_put(G_LED_PIN, true);
+            case 0x0: // Dispense
+                if(num_pills_td == 0){
+                    gpio_put(R_LED_PIN, false);
+                    gpio_put(G_LED_PIN, false);
+                    disp_status = 1;
+                    break;
+                }
+                    gpio_put(R_LED_PIN, false);
+                    gpio_put(G_LED_PIN, true);
 
-    //                 printf("dispensing %u...\n", num_pills_td);
-    //                 dispensePills(num_pills_td,500);
-    //                 num_pills_td = 0;
-    //                 disp_status = 1;
+                    printf("dispensing %u...\n", num_pills_td);
+                    dispensePills(num_pills_td,500);
+                    num_pills_td = 0;
+                    disp_status = 1;
                     
-    //                 gpio_put(G_LED_PIN, false);
+                    gpio_put(G_LED_PIN, false);
                     
-    //                 break;   
-    //         default:
-    //             break;
-    //         }
-    // }
+                    break;   
+            default:
+                break;
+            }
+    }
     
 }
