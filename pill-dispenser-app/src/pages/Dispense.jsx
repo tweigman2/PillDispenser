@@ -2,11 +2,17 @@ import '../App.css';
 import * as React from 'react';
 import { useEffect, useState, useRef } from 'react';
 import Stack from '@mui/material/Stack';
-import { Paper, Typography } from '@mui/material';
+import { createTheme, Paper, ThemeProvider, Typography } from '@mui/material';
 const patientData = require('../patientData.json');
 const pillData = require('../pillData.json');
 
 const MODULE_1_ADDR = 0x17; // If this doesn't work, replace with 23
+
+const theme = createTheme({
+    typography: {
+        fontSize: 25
+    }
+});
 
 export default function Dispense({onDispenseClick, patientName, patientId, prescriptionNumber, pillNumber, scaleWeight, startDispensing, setStartDispensing}) {
 
@@ -100,10 +106,12 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
                 <Paper sx={{whiteSpace: "pre-wrap"}}>
                     <Typography>{`Patient Name: ${patientName}\nPatient ID: ${patientId}`}</Typography>
                 </Paper>
-                <Paper>{`${hours}:${minutes} ${halfDay}`}</Paper>
+                <Paper>
+                    <Typography paddingTop={3}>{`${hours}:${minutes} ${halfDay}`}</Typography>
+                </Paper>
             </Stack>
             <Stack direction="row" justifyContent="center" spacing={10}>
-                <img src={"images/" + imagePath} width={288} height={216} alt="Pill being dispensed"/>
+                <img src={"images/" + imagePath} width={648} height={486} alt="Pill being dispensed"/>
                 <Paper onClick={onDispenseClick} sx={{whiteSpace: "pre-wrap", p: "5px"}}>
                     <Typography>{`Dispensing: ${pillAmount} ${pillName}\n\n`}</Typography>
                     {/* <Paper sx={{whiteSpace: "pre-wrap"}} elevation={2}> */}
@@ -111,7 +119,7 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
                         {/* In pillData.json, concentration is in mg, weight is in g, tolerance is in percent */}
                     <Typography>{`\tConcentration/Pill: ${concentration} mg\n\tTotal Dosage: ${concentration * pillAmount} mg`}</Typography>
                     {/* </Paper> */}
-                    <Typography>{`\nCurrent weight: ${scaleWeight} g`}</Typography>
+                    <Typography fontSize={100}>{`\nCurrent weight: ${scaleWeight} g`}</Typography>
                 </Paper>
             </Stack>
         </Stack>

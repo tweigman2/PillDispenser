@@ -9,6 +9,7 @@ import ReloadPillChoice from './pages/ReloadPillChoice';
 import ReloadPillVerification from './pages/ReloadPillVerification';
 import Prescriptions from './pages/Prescriptions';
 import Dispense from './pages/Dispense';
+import { createTheme, ThemeProvider } from '@mui/material';
 const loginInfo = require('./login.json');
 const patientData = require('./patientData.json');
 const alertDuration = 5000; // 5000 ms
@@ -44,6 +45,12 @@ export default function App() {
           setScaleWeight(data);
         }
       });
+    }
+  });
+
+  const theme = createTheme({
+    typography: {
+      fontSize: 40
     }
   });
 
@@ -210,6 +217,6 @@ export default function App() {
       break;
   }
   return (
-    <>{currentPage}</>
+    <ThemeProvider theme={theme}>{currentPage}</ThemeProvider>
   );
 }

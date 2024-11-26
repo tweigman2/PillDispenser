@@ -4,9 +4,9 @@ import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import { Icon, IconButton } from '@mui/material';
+import { Avatar, Box, Container, createTheme, Icon, IconButton, SvgIcon, ThemeProvider } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import addPills from '../addPills.svg';
+import AddPillsIcon from '../addPills.svg';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -15,6 +15,12 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 const patientData = require('../patientData.json');
+
+const theme = createTheme({
+  typography: {
+    fontSize: 25
+  }
+});
 
 function createData(name, id) {
   return { name, id };
@@ -39,11 +45,11 @@ function PatientTable({selected, setSelected, setPatientName}) {
   };
   return (
     <div className="patient-table">
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{width: "80%", marginLeft: "10%", marginTop: 5}}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell sx={{width: "60%"}}>Patient Names:</TableCell>
+              <TableCell sx={{width: "50%"}}>Patient Names:</TableCell>
               <TableCell>Patient ID:</TableCell>
             </TableRow>
           </TableHead>
@@ -90,22 +96,26 @@ export default function Patients({selected, setSelected, onPatientNextClick, onL
   };
   
   return (
-    <Stack spacing={2}>
-      <Stack direction="row" sx={{justifyContent: "space-between"}}>
-        <div>
-          <TextField label="Patient Search Bar" variant="outlined" value={searchName}
-            onChange={filter}
-          />
-        </div>
-        <IconButton onClick={onReloadClick}>
-          <Icon>
-            <img src={addPills} height={25} width={25} alt="Reload Pills"/>
-          </Icon>
-        </IconButton>
-        <Button variant="contained" onClick={onLogoutClick}>Logout</Button>
+    <ThemeProvider theme={theme}>
+      <Stack spacing={2}>
+        <Stack direction="row">
+          <div>
+            <TextField label="Patient Search Bar" variant="outlined" value={searchName}
+              onChange={filter}
+            />
+          </div>
+          <Button onClick={onReloadClick} variant="contained" startIcon={
+            <Avatar src={AddPillsIcon}/>
+          } sx={{marginLeft: "23.5%"}}>
+            Reload Pills
+          </Button>
+          <Button variant="contained" onClick={onLogoutClick} sx={{marginLeft: "35.5%"}}>Logout</Button>
+        </Stack>
+        <PatientTable {...tableProps}/>
+        <Box textAlign="center" paddingTop={20}>
+          <Button variant="contained" disabled={selected === -1} onClick={onPatientNextClick}>Select Patient Prescription</Button>
+        </Box>
       </Stack>
-      <PatientTable {...tableProps}/>
-      <Button variant="contained" disabled={selected === -1} onClick={onPatientNextClick}>Next</Button>
-    </Stack>
+    </ThemeProvider>
   );
 }

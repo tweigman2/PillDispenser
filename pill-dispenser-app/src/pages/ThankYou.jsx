@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack';
 import React, { useEffect } from 'react';
 
 
-const pageDuration = 5000; //5000 milliseconds
+const pageDuration = 2000; //5000 milliseconds
 
 export default function ThankYou({afterThankYou}) {
   useEffect(() => {

@@ -57,14 +57,16 @@ export default function VerifyDosage({onCorrectDosageClick, prescriptionNumber, 
           <Paper sx={{whiteSpace: "pre-wrap"}}>
               <Typography>{`Patient Name: ${patientName}\nPatient ID: ${patientId}`}</Typography>
           </Paper>
-          <Paper>{`${hours}:${minutes} ${halfDay}`}</Paper>
+          <Paper>
+            <Typography paddingTop={3}>{`${hours}:${minutes} ${halfDay}`}</Typography>
+          </Paper>
       </Stack>
 
-      <Stack direction="row" spacing={2} alignItems="center" justifyContent="center" spacing={10}>
+      <Stack direction="row" alignItems="center" justifyContent="center" spacing={10}>
         <img
           src={"/images/" + imagePath}
           alt="Description"
-          style={{ width: '200px', height: 'auto' }}
+          style={{ width: '648px', height: 'auto' }}
         />
         <Stack>
           <Typography variant="h5">{`Dispensed: ${pillAmount} ${pillName}`}</Typography>
@@ -76,10 +78,9 @@ export default function VerifyDosage({onCorrectDosageClick, prescriptionNumber, 
           </Typography>
         </Stack>
       </Stack>
-
-      <Stack direction="row" alignItems="center" justifyContent="center" spacing={5}>
-        <Button sx={{ width: "200px" }} variant="contained" onClick={onCorrectDosageClick}>Correct</Button>
-        <Button sx={{ width: "200px" }} variant="contained" >Incorrect</Button>
+      <Stack direction="row" alignItems="center" justifyContent="center" spacing={5} paddingTop={8}>
+        <Button variant="contained" onClick={onCorrectDosageClick}>Correct</Button>
+        <Button variant="contained" >Incorrect</Button>
       </Stack>
     </Stack>
   );

@@ -33,22 +33,22 @@ export default function ReloadPillVerification({onReloadCompleteClick, moduleBei
   }
 
   return (
-    <Stack spacing={2} alignItems="center">
-      <h1>Reload Pill</h1>
+    <Stack spacing={15} alignItems="center">
+      <Typography variant="h4">Reload Pill</Typography>
       <Stack direction="row" spacing={2} alignItems="center">
-        <Stack alignItems = "center">
+        <Stack paddingLeft={8}>
           <Typography variant="body1">{pillText}</Typography>
           <img
             src={imagePath}
             alt="Description"
-            style={{ width: '200px', height: 'auto' }}
+            style={{ width: '300px', height: 'auto' }}
           />
         </Stack>
-        <Typography variant="h5">Reload the illuminated pill module and hit the reload complete button.</Typography>
+        <Typography variant="h5" paddingLeft={10}>Reload the illuminated pill module and hit the reload complete button.</Typography>
       </Stack>
 
       <Stack direction="row" sx={{ alignItems: "center" }}>
-        <Button sx={{ width: "200px" }} variant="contained" onClick={onReloadCompleteClick}>Reload Complete</Button>
+        <Button variant="contained" onClick={onReloadCompleteClick}>Reload Complete</Button>
       </Stack>
     </Stack>
   );

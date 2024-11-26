@@ -37,14 +37,10 @@ const marks = [
 ];
 
 function Prescription({num, prescriptionText, onPrescriptionClick}) {
-    // const [backgroundColor, setBackgroundColor] = useState('white');
-    // const handleClick = (event) => {
-    //     setBackgroundColor('blue');
-    // }
     return (
         <Paper sx={{whiteSpace: "pre-wrap", backgroundColor: 'white'}} onClick={() => onPrescriptionClick(num - 1)}>
-            <Typography borderBottom={1}>{`Prescription #${num}`}</Typography>
-            <Typography>{prescriptionText}</Typography>
+            <Typography borderBottom={1} paddingLeft={2} paddingRight={2}>{`Prescription #${num}`}</Typography>
+            <Typography paddingLeft={2}>{prescriptionText}</Typography>
         </Paper>
     );
 }
@@ -91,10 +87,12 @@ export default function Prescriptions({patientName, patientId, onPrescriptionCli
             <Paper sx={{whiteSpace: "pre-wrap"}}>
                 <Typography>{`Patient Name: ${patientName}\nPatient ID: ${patientId}`}</Typography>
             </Paper>
-            <Paper>{`${hours}:${minutes} ${halfDay}`}</Paper>
+            <Paper>
+                <Typography paddingTop={4}>{`${hours}:${minutes} ${halfDay}`}</Typography>
+            </Paper>
         </Stack>
         {/* <Slider track={false} marks={marks} sx={{ width: "90%" }}/> */}
-        <Stack direction="row" spacing={3}>
+        <Stack direction="row" spacing={3} paddingTop={25}>
             {prescriptionData !== undefined && prescriptionData.map((item, index) => {
                 let text = "";
                 const pillNames = Object.keys(item);

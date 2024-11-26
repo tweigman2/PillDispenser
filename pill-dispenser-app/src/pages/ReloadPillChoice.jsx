@@ -4,6 +4,7 @@ import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { createTheme, ThemeProvider } from '@mui/material';
 
 export default function ReloadPillChoice({onReloadBackClick, onReloadChoiceClick, pillsInModules, setPillsInModules}) {
 
@@ -26,7 +27,7 @@ export default function ReloadPillChoice({onReloadBackClick, onReloadChoiceClick
             <img
               src="/images/caffeine_pic.jpg"
               alt="Caffeine"
-              style={{width: '200px', height: 'auto'}}
+              style={{width: '300px', height: '225px'}}
             />
           </Stack>
           <Stack alignItems="center" onClick={() => onReloadChoiceClick(2)}>
@@ -36,7 +37,7 @@ export default function ReloadPillChoice({onReloadBackClick, onReloadChoiceClick
             <img
               src="/images/ibuprofen_pic.jfif"
               alt="Ibuprofen"
-              style={{width: '200px', height: 'auto'}}
+              style={{width: '300px', height: 'auto'}}
             />
           </Stack>
           <Stack alignItems="center" onClick={() => onReloadChoiceClick(3)}>
@@ -46,8 +47,16 @@ export default function ReloadPillChoice({onReloadBackClick, onReloadChoiceClick
             <img
               src="/images/tic_tac_pic.jpg"
               alt="Tic Tac"
-              style={{width: '200px', height: 'auto'}}
+              style={{width: '300px', height: 'auto'}}
             />
+            {/* <Typography variant="body1">
+              Module 3 - Tylenol
+            </Typography>
+            <img
+              src="/images/tylenol_pic.jpeg"
+              alt="Tic Tac"
+              style={{width: '300px', height: 'auto'}}
+            /> */}
           </Stack>
           <Stack alignItems="center" onClick={() => onReloadChoiceClick(4)}>
             <Typography variant="body1">
@@ -56,7 +65,7 @@ export default function ReloadPillChoice({onReloadBackClick, onReloadChoiceClick
             <img
               src="/images/aspirin_pic.jpg"
               alt="Aspirin"
-              style={{width: '200px', height: 'auto'}}
+              style={{width: '300px', height: 'auto'}}
             />
           </Stack>
         </Stack>
