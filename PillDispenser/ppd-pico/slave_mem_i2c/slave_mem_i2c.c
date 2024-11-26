@@ -29,8 +29,8 @@ static const uint I2C_BAUDRATE = 100000; // 100 kHz
 // You'll need to wire pin GP4 to GP6 (SDA), and pin GP5 to GP7 (SCL).
 // static const uint I2C_SLAVE_SDA_PIN = PICO_DEFAULT_I2C_SDA_PIN; // 4
 // static const uint I2C_SLAVE_SCL_PIN = PICO_DEFAULT_I2C_SCL_PIN; // 5
-static const uint I2C_SLAVE_SDA_PIN = 18; // 4
-static const uint I2C_SLAVE_SCL_PIN = 19; // 5
+static const uint I2C_SLAVE_SDA_PIN = 0; // 4
+static const uint I2C_SLAVE_SCL_PIN = 1; // 5
 
 static const uint IR_SENSE_PIN = 15; // GP15
 static const uint SENSE_DELAY = 5; // ms 
@@ -233,7 +233,7 @@ static void dispensePills(int numPills, int speedVal) {
         printf("numb pills disp in loop: %d\n", num_pills_disp);
         //if stuck spin other direction
 
-        uint16_t raw = adc_read(); // GPIO 27
+        uint16_t raw = adc_read(); // GPIO 26
 
         int voltage_stall_sense = (int) raw;
 
@@ -318,15 +318,15 @@ int main() {
     irq_set_enabled(SIO_IRQ_PROC0, true);
 
     setup_slave();
-    // dispensePills(5,500);
-    while (1)
-    {
-        // printf("pi instruction: %u\n",pi_instruction);
-        switch (STATE) {
-            case 0x1: // Refill
-                gpio_put(R_LED_PIN, true);
-                gpio_put(G_LED_PIN, false);
-                break;
+    dispensePills(5,500);
+    // while (1)
+    // {
+    //     printf("pi instruction: %u\n",pi_instruction);
+    //     switch (STATE) {
+    //         case 0x1: // Refill
+    //             gpio_put(R_LED_PIN, true);
+    //             gpio_put(G_LED_PIN, false);
+    //             break;
 
             case 0x0: // Dispense
                 if(num_pills_td == 0){
