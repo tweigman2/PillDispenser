@@ -41,6 +41,7 @@ static const uint IN_1_PIN = 12; // GP12
 
 static const uint R_LED_PIN = 11; // GP11
 static const uint G_LED_PIN = 10; // GP10
+static const uint O_LED_PIN = 9; // GP9
 
 static const uint numLoopNeeded = 10000; // The amount of motor spins loops before swithcing the LED
 
@@ -167,8 +168,8 @@ bool detect_ir(){
 void detect_ir_routine(){
     stdio_init_all();
 
-    gpio_init(R_LED_PIN);
-    gpio_set_dir(R_LED_PIN, GPIO_OUT);
+    // gpio_init(R_LED_PIN);
+    // gpio_set_dir(R_LED_PIN, GPIO_OUT);
 
     uint num_pills_disp_core1 = 0;
     //Start of routine
@@ -312,38 +313,47 @@ int main() {
     gpio_init(R_LED_PIN);
     gpio_set_dir(R_LED_PIN, GPIO_OUT);
 
+    gpio_init(G_LED_PIN);
+    gpio_set_dir(G_LED_PIN, GPIO_OUT);
+
+    gpio_init(O_LED_PIN);
+    gpio_set_dir(O_LED_PIN, GPIO_OUT);
+
     // Configure Core 0 Interrupt
     multicore_fifo_clear_irq();
     irq_set_exclusive_handler(SIO_IRQ_PROC0, core0_interrupt_handler);
     irq_set_enabled(SIO_IRQ_PROC0, true);
 
     setup_slave();
-    dispensePills(5,500);
-    // while (1)
-    // {
-    //     printf("pi instruction: %u\n",pi_instruction);
-    //     switch (STATE) {
-    //         case 0x1: // Refill
-    //             gpio_put(R_LED_PIN, true);
-    //             gpio_put(G_LED_PIN, false);
-    //             break;
+    // dispensePills(5,500);
+    while (1)
+    {
+        printf("pi instruction: %u\n",pi_instruction);
+        switch (STATE) {
+            case 0x1: // Refill
+                gpio_put(R_LED_PIN, true);
+                gpio_put(G_LED_PIN, false);
+                gpio_put(O_LED_PIN, false);
+                break;
 
             case 0x0: // Dispense
                 if(num_pills_td == 0){
                     gpio_put(R_LED_PIN, false);
                     gpio_put(G_LED_PIN, false);
+                    gpio_put(O_LED_PIN, false);
                     disp_status = 1;
                     break;
                 }
                     gpio_put(R_LED_PIN, false);
-                    gpio_put(G_LED_PIN, true);
+                    gpio_put(G_LED_PIN, false);
+                    gpio_put(O_LED_PIN, true);
 
                     printf("dispensing %u...\n", num_pills_td);
                     dispensePills(num_pills_td,500);
                     num_pills_td = 0;
                     disp_status = 1;
                     
-                    gpio_put(G_LED_PIN, false);
+                    gpio_put(G_LED_PIN, true);
                     
                     break;   
             default:
