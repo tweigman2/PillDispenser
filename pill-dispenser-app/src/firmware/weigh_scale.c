@@ -22,6 +22,12 @@ int main(void)
     delay(1000);
     digitalWrite(power, LOW);
     delay(10000);
+
+    // Assume there is weight on the scale, so zero it out before starting to weigh
+    digitalWrite(tare1, HIGH);
+    delay(500);
+    digitalWrite(tare1, LOW);
+    delay(500);
     int delayNum = 400;
     int period = 1000;
     while (1)
