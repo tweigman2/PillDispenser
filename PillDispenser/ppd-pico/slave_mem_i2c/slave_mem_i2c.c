@@ -29,11 +29,11 @@ static const uint I2C_BAUDRATE = 100000; // 100 kHz
 // You'll need to wire pin GP4 to GP6 (SDA), and pin GP5 to GP7 (SCL).
 // static const uint I2C_SLAVE_SDA_PIN = PICO_DEFAULT_I2C_SDA_PIN; // 4
 // static const uint I2C_SLAVE_SCL_PIN = PICO_DEFAULT_I2C_SCL_PIN; // 5
-static const uint I2C_SLAVE_SDA_PIN = 0; // 4
-static const uint I2C_SLAVE_SCL_PIN = 1; // 5
+static const uint I2C_SLAVE_SDA_PIN = 18; // 4
+static const uint I2C_SLAVE_SCL_PIN = 19; // 5
 
 static const uint IR_SENSE_PIN = 15; // GP15
-static const uint SENSE_DELAY = 400; // ms 
+static const uint SENSE_DELAY = 5; // ms 
 
 static const uint MOTOR_SENSE_PIN = 14; // GP14
 static const uint IN_2_PIN = 13; // GP13
@@ -96,21 +96,17 @@ static void i2c_slave_handler(i2c_inst_t *i2c, i2c_slave_event_t event) {
     }
 }
 
-bool isDividableBy(int x, int n) {
-    for (int i = 0; i <= n; i++) {
-        if (x == i*n)
-            return false;
-    }
-    return true;
-}
 
 // Core 0 interrupt Handler
 void core0_interrupt_handler() {
 
  // Receive number of pills
     while (multicore_fifo_rvalid()){
-        num_pills_disp = multicore_fifo_pop_blocking();   
+
+        num_pills_disp = multicore_fifo_pop_blocking(); 
+        multicore_fifo_drain();  
     }
+    printf("Interupt");
     multicore_fifo_clear_irq(); // Clear interrupt
 }
 
@@ -124,23 +120,48 @@ bool detect_ir(){
     while(!current_state){ // wait for first edge
         if(current_state = gpio_get(IR_SENSE_PIN)) break;
     }
-    while(!detected){
-        current_state = gpio_get(IR_SENSE_PIN);
-        if(current_state != last_state){
-            last_time = to_ms_since_boot(get_absolute_time());
-        }
+    detected = 1;
+    sleep_ms(100);
+    // while(!detected){
+    //     current_state = gpio_get(IR_SENSE_PIN);
+    //     if(current_state != last_state){
+    //         last_time = to_ms_since_boot(get_absolute_time());
+    //     }
 
-        if(( to_ms_since_boot(get_absolute_time()) - last_time ) > SENSE_DELAY){ // state has been stable for delay time
-            if(current_state == 0 && last_state == 0) { // check pulse is over
-                detected = 1;
-            }
-        }
+    //     if(( to_ms_since_boot(get_absolute_time()) - last_time ) > SENSE_DELAY){ // state has been stable for delay time
+    //         if(current_state == 0 && last_state == 0) { // check pulse is over
+    //             detected = 1;
+    //         }
+    //     }
 
-        last_state = current_state;
-    }
+    //     last_state = current_state;
+    // }
+
+    // bool last_state = 1;
+    // bool current_state = gpio_get(IR_SENSE_PIN);
+    // uint32_t last_time = 0;
+
+    // bool detected = 0;
+
+    // while(!current_state){ // wait for first edge
+    //     if(current_state = gpio_get(IR_SENSE_PIN)) break;
+
+    // }
+    // last_time = to_ms_since_boot(get_absolute_time());
+    // while(!detected){
+    //     current_state = gpio_get(IR_SENSE_PIN);
+    //     if(current_state == 0 && last_state == 1) { // check pulse is over
+    //         if(( to_ms_since_boot(get_absolute_time()) - last_time ) > SENSE_DELAY){ // state has been stable for delay time
+    //             detected = 1;
+    //         } else {
+    //             break;
+    //         }
+    //     }
+
+    //     last_state = current_state;
+    // }
+
     return detected;
-
-
 }
 
 void detect_ir_routine(){
@@ -157,8 +178,13 @@ void detect_ir_routine(){
         if(detect_ir()){
              num_pills_disp_core1++;
              gpio_put(R_LED_PIN,1);
-            //  printf("statement1 num pills according to ir: %d\n", num_pills_disp);
+            //  printf("statement1 num pills according to core1: %d\n", num_pills_disp_core1);
+            //  printf("statement1 num pills according to global: %d\n", num_pills_disp);
              multicore_fifo_push_blocking(num_pills_disp_core1); 
+
+            // num_pills_disp++;
+            
+
             //  gpio_put(R_LED_PIN, 1);
             //  gpio_put(R_LED_PIN, 0);
         }
@@ -204,18 +230,18 @@ static void dispensePills(int numPills, int speedVal) {
     
     while (num_pills_disp < numPills){
         // printf(pi_instruction);
-        // printf("numb pills disp in loop: %d\n", num_pills_disp);
+        printf("numb pills disp in loop: %d\n", num_pills_disp);
         //if stuck spin other direction
 
         uint16_t raw = adc_read(); // GPIO 27
 
         int voltage_stall_sense = (int) raw;
 
-        printf("raw: %u, int: %u\n, state1: %u, state2: %u",raw,voltage_stall_sense,pin_one_state,pin_two_state);
+        // printf("raw: %u, int: %u\n, state1: %u, state2: %u",raw,voltage_stall_sense,pin_one_state,pin_two_state);
 
         if (voltage_stall_sense > 3000)
         {
-            printf("Stuck!!\n");
+            // printf("Stuck!!\n");
             pin_one_state = !pin_one_state;
             pin_two_state = !pin_two_state;
             pwm_set_chan_level(slice_num_1, PWM_CHAN_A, speedVal*pin_one_state);
@@ -224,30 +250,14 @@ static void dispensePills(int numPills, int speedVal) {
             // pwm_set_enabled(slice_num_1, pin_one_state);
             // pwm_set_enabled(slice_num_2, pin_two_state);
         }
-        numLoops++;
-        if (isDividableBy(numLoopNeeded,numLoops))
-        {
-            gpio_put(G_LED_PIN, LEDstate);
-            LEDstate = !LEDstate; 
-        }
-        
-        
     }
 
     printf("done!\n");
 
     // Stop Spinning
-    pwm_set_wrap(slice_num_1, 500);
-    pwm_set_chan_level(slice_num_1, PWM_CHAN_B, speedVal);
-    pwm_set_enabled(slice_num_1, false);
-    
+    pwm_set_chan_level(slice_num_1, PWM_CHAN_A, 0); 
+    pwm_set_chan_level(slice_num_2, PWM_CHAN_B, 0);
 
-    pwm_set_wrap(slice_num_2, 500);
-    pwm_set_chan_level(slice_num_2, PWM_CHAN_B, speedVal);
-    pwm_set_enabled(slice_num_2, false);
-    // pwm_set_chan_level(slice_num, PWM_CHAN_B, 0);
-    gpio_put(IN_1_PIN, false);
-    gpio_put(IN_2_PIN, false);
 
     // Reset Core 1
     multicore_reset_core1();
@@ -269,9 +279,9 @@ static void setup_slave() {
     gpio_set_function(I2C_SLAVE_SCL_PIN, GPIO_FUNC_I2C);
     gpio_pull_up(I2C_SLAVE_SCL_PIN);
 
-    i2c_init(i2c0, I2C_BAUDRATE);
+    i2c_init(i2c1, I2C_BAUDRATE);
     // configure I2C0 for slave mode
-    i2c_slave_init(i2c0, I2C_SLAVE_ADDRESS, &i2c_slave_handler);
+    i2c_slave_init(i2c1, I2C_SLAVE_ADDRESS, &i2c_slave_handler);
 }
 
 #endif
@@ -308,37 +318,37 @@ int main() {
     irq_set_enabled(SIO_IRQ_PROC0, true);
 
     setup_slave();
-    dispensePills(5,500);
-    // while (1)
-    // {
-    //     printf("pi instruction: %u\n",pi_instruction);
-    //     switch (STATE) {
-    //         case 0x1: // Refill
-    //             gpio_put(R_LED_PIN, true);
-    //             gpio_put(G_LED_PIN, false);
-    //             break;
+    // dispensePills(5,500);
+    while (1)
+    {
+        // printf("pi instruction: %u\n",pi_instruction);
+        switch (STATE) {
+            case 0x1: // Refill
+                gpio_put(R_LED_PIN, true);
+                gpio_put(G_LED_PIN, false);
+                break;
 
-    //         case 0x0: // Dispense
-    //             if(num_pills_td == 0){
-    //                 gpio_put(R_LED_PIN, false);
-    //                 gpio_put(G_LED_PIN, false);
-    //                 disp_status = 1;
-    //                 break;
-    //             }
-    //                 gpio_put(R_LED_PIN, false);
-    //                 gpio_put(G_LED_PIN, true);
+            case 0x0: // Dispense
+                if(num_pills_td == 0){
+                    gpio_put(R_LED_PIN, false);
+                    gpio_put(G_LED_PIN, false);
+                    disp_status = 1;
+                    break;
+                }
+                    gpio_put(R_LED_PIN, false);
+                    gpio_put(G_LED_PIN, true);
 
-    //                 printf("dispensing %u...\n", num_pills_td);
-    //                 dispensePills(num_pills_td,500);
-    //                 num_pills_td = 0;
-    //                 disp_status = 1;
+                    printf("dispensing %u...\n", num_pills_td);
+                    dispensePills(num_pills_td,500);
+                    num_pills_td = 0;
+                    disp_status = 1;
                     
-    //                 gpio_put(G_LED_PIN, false);
+                    gpio_put(G_LED_PIN, false);
                     
-    //                 break;   
-    //         default:
-    //             break;
-    //         }
-    // }
+                    break;   
+            default:
+                break;
+            }
+    }
     
 }
