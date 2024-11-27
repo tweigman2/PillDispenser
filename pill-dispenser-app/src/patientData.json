@@ -30,5 +30,28 @@
     },
     "3423": {
         "name": "Daniella Daniels"
+    },
+    "1921": {
+        "name": "Ethan Expo",
+        "prescriptions": [
+            {
+                "Caffeine": 3
+            },
+            {
+                "Aspirin": 5
+            },
+            {
+                "Tic Tac": 4
+            },
+            {
+                "Ibuprofen": 6
+            },
+            {
+                "Caffeine": 2,
+                "Aspirin": 3,
+                "Tic Tac": 7,
+                "Ibuprofen": 4
+            }
+        ]
     }
 }
