@@ -6,31 +6,37 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 export default function ReloadPillVerification({onReloadCompleteClick, moduleBeingReloaded}) {
-  useEffect(() => {
-    window.api.sendCommand("src/firmware/i2c", ["w", 23, 0x80]);
-  });
 
   let pillText = "";
   let imagePath = "";
+  let i2c_address = 23;
 
   switch (moduleBeingReloaded) {
     case 1:
       pillText = "Module 1 - Caffeine";
       imagePath = "/images/caffeine_pic.jpg";
+      i2c_address = 23;
       break;
     case 2:
       pillText = "Module 2 - Ibuprofen";
       imagePath = "/images/ibuprofen_pic.jfif";
+      i2c_address = 26;
       break;
     case 3:
       pillText = "Module 3 - Tic Tac";
       imagePath = "/images/tic_tac_pic.jpg";
+      i2c_address = 25;
       break;
     case 4:
       pillText = "Module 4 - Aspirin";
       imagePath = "/images/aspirin_pic.jpg";
+      i2c_address = 24;
       break;
   }
+
+  useEffect(() => {
+    window.api.sendCommand("src/firmware/i2c", ["w", i2c_address, 0x80]);
+  });
 
   return (
     <Stack spacing={15} alignItems="center">

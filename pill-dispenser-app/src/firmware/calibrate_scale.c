@@ -25,7 +25,7 @@ int main(void)
     delay(10000);
     
     // How to calibrate scale
-    // 1. Single calibration
+    // Single calibration
     // In the power-on state, press and hold the calibration key for 3 seconds to enter calibration mode
     digitalWrite(calibrate, HIGH);
     delay(3000);
