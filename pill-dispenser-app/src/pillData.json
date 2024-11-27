@@ -15,7 +15,8 @@
         "concentration": 200,
         "image": "ibuprofen_pic.jfif",
         "weight": 0.32,
-        "tolerance": 5
+        "tolerance": 5,
+        "i2c_address": 26
     },
     "Claritin": {
         "concentration": 40,
@@ -25,18 +26,21 @@
         "concentration": 200,
         "image": "caffeine_pic.jpg",
         "weight": 0.53,
-        "tolerance": 5
+        "tolerance": 5,
+        "i2c_address": 23
     },
     "Aspirin": {
         "concentration": 81,
         "image": "aspirin_pic.jpg",
         "weight": 0.1047,
-        "tolerance": 5
+        "tolerance": 5,
+        "i2c_address": 24
     },
     "Tic Tac": {
         "concentration": 500,
         "image": "tic_tac_pic.jpg",
         "weight": 0.481,
-        "tolerance": 5
+        "tolerance": 5,
+        "i2c_address": 25
     }
 }

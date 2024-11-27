@@ -26,6 +26,7 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
     const tolerance = pillData[pillName].tolerance;
     const lowerBound = pillWeight * (1 - tolerance / 100);
     const upperBound = pillWeight * (1 + tolerance / 100);
+    const i2c_address = pillData[pillName].i2c_address;
 
     const [hours, setHours] = useState(0);
     const [minutes, setMinutes] = useState(0);
@@ -67,7 +68,7 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
             // MSB of 1 byte is commanding the pico to be in filling state
             // This causes the LED on the dispensing module to turn on
             // 1 is on, 0 is off
-            window.api.sendCommand("src/firmware/i2c", ["w", MODULE_1_ADDR, pillAmount]);
+            window.api.sendCommand("src/firmware/i2c", ["w", i2c_address, pillAmount]);
         }
     });
 
@@ -82,7 +83,7 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
             // window.api.onOutput((data) => {
             //     console.log("Value:", data);
             // });
-            const dispensing_status = window.api.execCommand("src/firmware/i2c", ["r", MODULE_1_ADDR]);
+            const dispensing_status = window.api.execCommand("src/firmware/i2c", ["r", i2c_address]);
             console.log(dispensing_status);
             console.log(parseFloat(scaleWeight));
             console.log(lowerBound * pillAmount);
