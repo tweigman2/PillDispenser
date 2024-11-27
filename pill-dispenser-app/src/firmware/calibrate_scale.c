@@ -4,7 +4,7 @@ int power = 9;
 int units = 10;
 int tare1 = 22;
 int tare2 = 27;
-int calibrate = 17;
+int calibrate = 11;
 
 int main(void)
 {
