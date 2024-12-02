@@ -17,8 +17,9 @@
 #include "pico/multicore.h"
 #include "hardware/irq.h"
 #include "hardware/adc.h"
+#include <math.h>
 
-static const uint I2C_SLAVE_ADDRESS = 0x17;
+static const uint I2C_SLAVE_ADDRESS = 0x1A;
 static const uint I2C_BAUDRATE = 100000; // 100 kHz
 
 #define MOTOR_PWM_OUTPUT 3
@@ -29,8 +30,8 @@ static const uint I2C_BAUDRATE = 100000; // 100 kHz
 // You'll need to wire pin GP4 to GP6 (SDA), and pin GP5 to GP7 (SCL).
 // static const uint I2C_SLAVE_SDA_PIN = PICO_DEFAULT_I2C_SDA_PIN; // 4
 // static const uint I2C_SLAVE_SCL_PIN = PICO_DEFAULT_I2C_SCL_PIN; // 5
-static const uint I2C_SLAVE_SDA_PIN = 0; // 4
-static const uint I2C_SLAVE_SCL_PIN = 1; // 5
+static const uint I2C_SLAVE_SDA_PIN = 18; // 4
+static const uint I2C_SLAVE_SCL_PIN = 19; // 5
 
 static const uint IR_SENSE_PIN = 15; // GP15
 static const uint SENSE_DELAY = 5; // ms 
@@ -199,7 +200,7 @@ static void dispensePills(int numPills, int speedVal) {
 
 
     //Start IR sensing on Core 1 
-    // stdio_init_all();
+    stdio_init_all();
     multicore_launch_core1(detect_ir_routine);
 
     bool CWstate = 1;
@@ -230,6 +231,7 @@ static void dispensePills(int numPills, int speedVal) {
     int numLoops = 0;
     
     while (num_pills_disp < numPills){
+    // while(1){
         // printf(pi_instruction);
         printf("numb pills disp in loop: %d\n", num_pills_disp);
         //if stuck spin other direction
@@ -240,7 +242,7 @@ static void dispensePills(int numPills, int speedVal) {
 
         // printf("raw: %u, int: %u\n, state1: %u, state2: %u",raw,voltage_stall_sense,pin_one_state,pin_two_state);
 
-        if (voltage_stall_sense > 3000)
+        if (voltage_stall_sense > 3400)
         {
             // printf("Stuck!!\n");
             pin_one_state = !pin_one_state;
@@ -270,6 +272,69 @@ static void dispensePills(int numPills, int speedVal) {
 }
     
 
+static void rotationalDispense(int speedVal){
+    
+    bool CWstate = 1;
+    bool LEDstate = 1;
+    bool LEDprevState = 0;
+    bool pin_one_state = 1;
+    bool pin_two_state = 0;
+    float degreesTravelled = 0;
+    float speedEstimate = 250;
+    
+  
+    //PWM Stuff
+    gpio_set_function(IN_1_PIN, GPIO_FUNC_PWM);
+    gpio_set_function(IN_2_PIN, GPIO_FUNC_PWM);
+    uint slice_num_1 = pwm_gpio_to_slice_num(IN_1_PIN);
+    uint slice_num_2 = pwm_gpio_to_slice_num(IN_2_PIN);
+    // Start Spinning CW
+    pwm_set_wrap(slice_num_1, 500);
+    pwm_set_chan_level(slice_num_1, PWM_CHAN_A, speedVal*pin_one_state);
+    pwm_set_enabled(slice_num_1, true);
+    
+
+    pwm_set_wrap(slice_num_2, 500);
+    pwm_set_chan_level(slice_num_2, PWM_CHAN_B, speedVal*pin_two_state);
+    pwm_set_enabled(slice_num_2, true);
+    
+    
+    int numLoops = 0;
+    int count = 0;
+    while (degreesTravelled < 60000 && degreesTravelled > -60000 ){
+    // while(1){
+        uint16_t raw = adc_read(); // GPIO 26
+        
+        int voltage_stall_sense = (int) raw;
+        if (voltage_stall_sense > 3400)
+        {
+            // printf("Stuck!!\n");
+            pin_one_state = !pin_one_state;
+            pin_two_state = !pin_two_state;
+            pwm_set_chan_level(slice_num_1, PWM_CHAN_A, speedVal*pin_one_state);
+            pwm_set_chan_level(slice_num_2, PWM_CHAN_B, speedVal*pin_two_state);
+            sleep_ms(500);
+        }
+        sleep_ms(10);
+        count= count + 10;
+        if (pin_one_state == 1 &&  pin_two_state == 0){
+            degreesTravelled = degreesTravelled + 10*speedEstimate;
+            printf("CW");
+        }
+        else{//your spinning the other way
+            degreesTravelled = degreesTravelled - 10*speedEstimate;
+        }
+        
+        printf("count: %u state1: %u, state2: %u, travelled: %u", count,pin_one_state,pin_two_state,degreesTravelled);
+        
+
+    }
+     // Stop Spinning
+    pwm_set_chan_level(slice_num_1, PWM_CHAN_A, 0); 
+    pwm_set_chan_level(slice_num_2, PWM_CHAN_B, 0);
+
+
+}
 
 static void setup_slave() {
     gpio_init(I2C_SLAVE_SDA_PIN);
@@ -325,40 +390,49 @@ int main() {
     irq_set_enabled(SIO_IRQ_PROC0, true);
 
     setup_slave();
-    // dispensePills(5,500);
-    while (1)
-    {
-        printf("pi instruction: %u\n",pi_instruction);
-        switch (STATE) {
-            case 0x1: // Refill
-                gpio_put(R_LED_PIN, true);
-                gpio_put(G_LED_PIN, false);
-                gpio_put(O_LED_PIN, false);
-                break;
+    sleep_ms(10);
+    dispensePills(5000,500);
+    // while (1)
+    // {
+    //     rotationalDispense(500);
+    //     printf("new LOOP");
+    //     sleep_ms(4000);
+    // }
+    
+    
+    // while (1)
+    // {
+    //     printf("pi instruction: %u\n",pi_instruction);
+    //     switch (STATE) {
+    //         case 0x1: // Refill
+    //             gpio_put(R_LED_PIN, true);
+    //             gpio_put(G_LED_PIN, false);
+    //             gpio_put(O_LED_PIN, false);
+    //             break;
 
-            case 0x0: // Dispense
-                if(num_pills_td == 0){
-                    gpio_put(R_LED_PIN, false);
-                    gpio_put(G_LED_PIN, false);
-                    gpio_put(O_LED_PIN, false);
-                    disp_status = 1;
-                    break;
-                }
-                    gpio_put(R_LED_PIN, false);
-                    gpio_put(G_LED_PIN, false);
-                    gpio_put(O_LED_PIN, true);
+    //         case 0x0: // Dispense
+    //             if(num_pills_td == 0){
+    //                 gpio_put(R_LED_PIN, false);
+    //                 gpio_put(G_LED_PIN, false);
+    //                 gpio_put(O_LED_PIN, false);
+    //                 disp_status = 1;
+    //                 break;
+    //             }
+    //                 gpio_put(R_LED_PIN, false);
+    //                 gpio_put(G_LED_PIN, false);
+    //                 gpio_put(O_LED_PIN, true);
 
-                    printf("dispensing %u...\n", num_pills_td);
-                    dispensePills(num_pills_td,500);
-                    num_pills_td = 0;
-                    disp_status = 1;
+    //                 printf("dispensing %u...\n", num_pills_td);
+    //                 dispensePills(num_pills_td,500);
+    //                 num_pills_td = 0;
+    //                 disp_status = 1;
                     
-                    gpio_put(G_LED_PIN, true);
+    //                 gpio_put(G_LED_PIN, true);
                     
-                    break;   
-            default:
-                break;
-            }
-    }
+    //                 break;   
+    //         default:
+    //             break;
+    //         }
+    // }
     
 }

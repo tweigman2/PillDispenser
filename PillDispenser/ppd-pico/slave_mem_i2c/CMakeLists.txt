@@ -71,7 +71,6 @@ target_link_libraries(slave_mem_i2c
     hardware_pio
     pico_multicore
     hardware_adc
-    
     )
 
 
