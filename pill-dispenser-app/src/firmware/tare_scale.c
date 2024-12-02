@@ -14,11 +14,16 @@ int main(void) {
     pinMode(units, OUTPUT);
     pinMode(power, OUTPUT);
     digitalWrite(weigh, LOW);
-    digitalWrite(tare2, LOW);
+    digitalWrite(tare1, LOW);
     digitalWrite(units, LOW);
     digitalWrite(power, LOW);
 
-    digitalWrite(tare1, HIGH);
-    delay(500);
-    digitalWrite(tare1, LOW);
+    digitalWrite(tare2, HIGH);
+    delay(1000);
+    digitalWrite(tare2, LOW);
+    delay(1500);
+    digitalWrite(weigh, HIGH);
+    delay(400);
+    digitalWrite(weigh, LOW);
+    delay(600);
 }

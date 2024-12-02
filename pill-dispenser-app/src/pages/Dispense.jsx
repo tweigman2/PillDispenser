@@ -31,8 +31,14 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
     const [hours, setHours] = useState(0);
     const [minutes, setMinutes] = useState(0);
     const [halfDay, setHalfDay] = useState("AM");
+    const [tareOffset, setTareOffset] = useState(0);
+    const [totalWeight, setTotalWeight] = useState(0);
     const scaleWeightRef = useRef();
     scaleWeightRef.current = scaleWeight;
+    const tareOffsetRef = useRef();
+    tareOffsetRef.current = tareOffset;
+    const totalWeightRef = useRef();
+    totalWeightRef.current = totalWeight;
 
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -68,20 +74,26 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
 
     useEffect(() => {
         async function dispense() {
-            while (scaleWeightRef.current < lowerBound * pillAmount) {
+            while (parseFloat(scaleWeightRef.current) - tareOffsetRef.current < lowerBound * pillAmount) {
                 // MSB of 1 byte is commanding the pico to be in filling state
                 // This causes the LED on the dispensing module to turn on
                 // 1 is on, 0 is off
+                // window.api.sendCommand("src/firmware/tare_scale");
+                // await sleep(4000);
                 window.api.sendCommand("src/firmware/i2c", ["w", i2c_address, 1]);
                 await sleep(2000);
                 window.api.sendCommand("src/firmware/weigh_scale");
+                await sleep(2000);
+                // setTotalWeight(totalWeight + parseFloat(scaleWeightRef.current));
             }
+            // console.log("Current weight:", totalWeightRef.current - tareOffsetRef.current);
         }
         async function start() {
             if (!startDispensing) {
                 setStartDispensing(true);
                 window.api.sendCommand("src/firmware/tare_scale");
-                await sleep(1000);
+                await sleep(4000);
+                setTareOffset(scaleWeightRef.current);
                 dispense();
             }
         }
@@ -101,11 +113,13 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
             // });
             const dispensing_status = window.api.execCommand("src/firmware/i2c", ["r", i2c_address]);
             console.log(dispensing_status);
-            console.log(parseFloat(scaleWeight));
+            console.log(tareOffsetRef.current);
+            console.log(parseFloat(scaleWeightRef.current) - tareOffsetRef.current);
+            // console.log(totalWeightRef.current);
             console.log(lowerBound * pillAmount);
             console.log(upperBound * pillAmount);
             if (parseInt(dispensing_status) === 1) {
-                if (parseFloat(scaleWeightRef.current) >= (lowerBound * pillAmount) && parseFloat(scaleWeightRef.current) <= (upperBound * pillAmount)) {
+                if (parseFloat(scaleWeightRef.current) - tareOffsetRef.current >= (lowerBound * pillAmount) && parseFloat(scaleWeightRef.current) - tareOffsetRef.current <= (upperBound * pillAmount)) {
                     onDispenseClick();
                 } else {
                     console.error("Pill weight is outside of the expected range! Double check that there are the right number of pills!");
