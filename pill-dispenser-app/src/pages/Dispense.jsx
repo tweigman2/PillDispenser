@@ -76,7 +76,10 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
                 await sleep(2000);
             }
         }
-        dispense();
+        if (!startDispensing) {
+            setStartDispensing(true);
+            dispense();
+        }
     });
 
     useEffect(() => {
