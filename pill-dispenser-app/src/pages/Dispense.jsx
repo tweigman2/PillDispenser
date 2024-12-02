@@ -73,7 +73,7 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
                 // This causes the LED on the dispensing module to turn on
                 // 1 is on, 0 is off
                 window.api.sendCommand("src/firmware/i2c", ["w", i2c_address, 1]);
-                await sleep(1000);
+                await sleep(2000);
             }
         }
         dispense();
