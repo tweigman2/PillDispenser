@@ -34,6 +34,10 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
     const scaleWeightRef = useRef();
     scaleWeightRef.current = scaleWeight;
 
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     const updateClock = () => {
         let currentTime = new Date();
         let newHours = currentTime.getHours();
@@ -62,13 +66,13 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
         return () => clearInterval(updateClockInterval);
     });
 
-    useEffect(() => {
-        if (!startDispensing) {
-            setStartDispensing(true);
+    useEffect(async () => {
+        while (scaleWeightRef.current < lowerBound * pillAmount) {
             // MSB of 1 byte is commanding the pico to be in filling state
             // This causes the LED on the dispensing module to turn on
             // 1 is on, 0 is off
-            window.api.sendCommand("src/firmware/i2c", ["w", i2c_address, pillAmount]);
+            window.api.sendCommand("src/firmware/i2c", ["w", i2c_address, 1]);
+            await sleep(1000);
         }
     });
 
