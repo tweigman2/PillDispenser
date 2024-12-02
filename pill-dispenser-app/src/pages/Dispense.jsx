@@ -74,12 +74,13 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
                 // 1 is on, 0 is off
                 window.api.sendCommand("src/firmware/i2c", ["w", i2c_address, 1]);
                 await sleep(2000);
+                window.api.sendCommand("src/firmware/weigh_scale");
             }
         }
         async function start() {
             if (!startDispensing) {
                 setStartDispensing(true);
-                window.api.sendCommand("src/firmware/scale");
+                window.api.sendCommand("src/firmware/tare_scale");
                 await sleep(1000);
                 dispense();
             }

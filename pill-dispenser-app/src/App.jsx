@@ -36,7 +36,7 @@ export default function App() {
   useEffect(() => {
     if (!initialized) {
       initialized = true;
-      window.api.sendCommand("src/firmware/scale", ["on"]);
+      window.api.sendCommand("src/firmware/power_on_scale");
       window.api.sendCommand("cat", ["/dev/ttyUSB0"]);
       window.api.onOutput((data) => {
         if (data.includes("g")) {
@@ -84,7 +84,6 @@ export default function App() {
   const onDispenseClick = () => {
     setPageNumber(4);
     setStartDispensing(false);
-    window.api.kill();
   }
 
   const onCorrectDosageClick = () => {

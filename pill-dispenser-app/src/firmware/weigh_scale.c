@@ -6,7 +6,7 @@ int tare1 = 22;
 int tare2 = 27;
 int weigh = 11;
 
-int main(int argc, char *argv[])
+int main(void)
 {
     wiringPiSetupGpio();
     pinMode(weigh, OUTPUT);
@@ -14,31 +14,32 @@ int main(int argc, char *argv[])
     pinMode(tare1, OUTPUT);
     pinMode(units, OUTPUT);
     pinMode(power, OUTPUT);
-    digitalWrite(weigh, LOW);
+    // digitalWrite(weigh, LOW);
     digitalWrite(tare2, LOW);
     digitalWrite(tare1, LOW);
     digitalWrite(units, LOW);
-    if (argc > 1 && !strcmp("on", argv[1])) {
-        digitalWrite(power, HIGH);
-        delay(1000);
-        digitalWrite(power, LOW);
-        return;
-    } else {
-        digitalWrite(power, LOW);
-    }
+    digitalWrite(power, LOW);
+    // if (argc > 1 && !strcmp("on", argv[1])) {
+    //     digitalWrite(power, HIGH);
+    //     delay(1000);
+    //     digitalWrite(power, LOW);
+    //     return;
+    // } else {
+    //     digitalWrite(power, LOW);
+    // }
 
     // Assume there is weight on the scale, so zero it out before starting to weigh
-    digitalWrite(tare1, HIGH);
-    delay(500);
-    digitalWrite(tare1, LOW);
-    delay(500);
+    // digitalWrite(tare1, HIGH);
+    // delay(500);
+    // digitalWrite(tare1, LOW);
+    // delay(500);
     int delayNum = 400;
     int period = 1000;
-    while (1)
-    {
-        digitalWrite(weigh, HIGH);
-        delay(delayNum);
-        digitalWrite(weigh, LOW);
-        delay(period - delayNum);
-    }
+    // while (1)
+    // {
+    digitalWrite(weigh, HIGH);
+    delay(delayNum);
+    digitalWrite(weigh, LOW);
+    delay(period - delayNum);
+    // }
 }
