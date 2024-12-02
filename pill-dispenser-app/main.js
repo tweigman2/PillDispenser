@@ -3,6 +3,8 @@ const { spawn } = require('node:child_process');
 const { open, openSync } = require("node:fs");
 const path = require('node:path');
 
+let proc;
+
 const createWindow = () => {
     const win = new BrowserWindow({
         width: 1024,
@@ -26,9 +28,13 @@ app.on("window-all-closed", () => {
 });
 
 ipcMain.on('spawn-command', (event, command, args) => {
-    const proc = spawn(command, args);
+    proc = spawn(command, args);
 
     proc.stdout.on('data', (data) => {
         event.reply('command-output', data.toString());
     })
+});
+
+ipcMain.on('kill', (event) => {
+    proc.kill();
 });

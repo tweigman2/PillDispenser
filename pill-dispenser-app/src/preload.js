@@ -15,5 +15,6 @@ contextBridge.exposeInMainWorld('api', {
         }
     },
     sendCommand: (command, args) => ipcRenderer.send('spawn-command', command, args),
+    kill: () => ipcRenderer.send('kill'),
     onOutput: (callback) => ipcRenderer.on('command-output', (_event, data) => callback(data))
 });

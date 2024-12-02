@@ -76,10 +76,15 @@ export default function Dispense({onDispenseClick, patientName, patientId, presc
                 await sleep(2000);
             }
         }
-        if (!startDispensing) {
-            setStartDispensing(true);
-            dispense();
+        async function start() {
+            if (!startDispensing) {
+                setStartDispensing(true);
+                window.api.sendCommand("src/firmware/scale");
+                await sleep(1000);
+                dispense();
+            }
         }
+        start();
     });
 
     useEffect(() => {

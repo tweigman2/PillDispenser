@@ -4,9 +4,9 @@ int power = 9;
 int units = 10;
 int tare1 = 22;
 int tare2 = 27;
-int weigh = 17;
+int weigh = 11;
 
-int main(void)
+int main(int argc, char *argv[])
 {
     wiringPiSetupGpio();
     pinMode(weigh, OUTPUT);
@@ -18,10 +18,14 @@ int main(void)
     digitalWrite(tare2, LOW);
     digitalWrite(tare1, LOW);
     digitalWrite(units, LOW);
-    digitalWrite(power, HIGH);
-    delay(1000);
-    digitalWrite(power, LOW);
-    delay(10000);
+    if (argc > 1 && !strcmp("on", argv[1])) {
+        digitalWrite(power, HIGH);
+        delay(1000);
+        digitalWrite(power, LOW);
+        return;
+    } else {
+        digitalWrite(power, LOW);
+    }
 
     // Assume there is weight on the scale, so zero it out before starting to weigh
     digitalWrite(tare1, HIGH);
